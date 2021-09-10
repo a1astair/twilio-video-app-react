@@ -3,27 +3,42 @@ import { createExpressHandler } from './createExpressHandler';
 import express, { RequestHandler } from 'express';
 import path from 'path';
 import { ServerlessFunction } from './types';
-
+//Don't check in this file!
+import { accessToken } from "./accessToken"
+import { nextTick } from 'process';
 const PORT = process.env.PORT ?? 8081;
+const axios = require('axios');
 
+//VideopolisOptions for getting token
+const videopolisTokenAxios = {
+  method: 'POST',
+  url: 'https://videopolis.development.telmediq.com/openid/token/',
+  data: "grant_type=client_credentials",
+  headers: {
+    'Authorization': 'Basic ' + accessToken,
+    'content-type': 'application/x-www-form-urlencoded'
+  } 
+}
 const app = express();
 app.use(express.json());
 
-// This server reuses the serverless endpoints from the "plugin-rtc" Twilio CLI Plugin, which is used when the "npm run deploy:twilio-cli" command is run.
-// The documentation for this endpoint can be found in the README file here: https://github.com/twilio-labs/plugin-rtc
-const tokenFunction: ServerlessFunction = require('@twilio-labs/plugin-rtc/src/serverless/functions/token').handler;
-const tokenEndpoint = createExpressHandler(tokenFunction);
-
-const recordingRulesFunction: ServerlessFunction = require('@twilio-labs/plugin-rtc/src/serverless/functions/recordingrules')
-  .handler;
-const recordingRulesEndpoint = createExpressHandler(recordingRulesFunction);
 
 const noopMiddleware: RequestHandler = (_, __, next) => next();
-const authMiddleware =
-  process.env.REACT_APP_SET_AUTH === 'firebase' ? require('./firebaseAuthMiddleware') : noopMiddleware;
-
-app.all('/token', authMiddleware, tokenEndpoint);
-app.all('/recordingrules', authMiddleware, recordingRulesEndpoint);
+const authMiddleware = noopMiddleware;
+//Get videopolis token
+app.all('/token', (req, r, next) => {
+  axios(videopolisTokenAxios)
+  .then(res => {
+    if (res.status === 200 && res.data.access_token) {
+      //Return the acesstoken from videopolis here
+      r.json({'token': res.data.access_token})
+      next();
+    }
+  })
+  .catch(error => {
+    console.error(error)
+  })
+});
 
 app.use((req, res, next) => {
   // Here we add Cache-Control headers in accordance with the create-react-app best practices.
