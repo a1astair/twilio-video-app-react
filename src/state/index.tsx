@@ -10,7 +10,7 @@ import { User } from 'firebase';
 export interface StateContextType {
   error: TwilioError | Error | null;
   setError(error: TwilioError | Error | null): void;
-  getToken(name: string, room: string, passcode?: string): Promise<{ room_type: RoomType; token: string }>;
+  getVideopolisToken(): Promise<{ token: string }>;
   user?: User | null | { displayName: undefined; photoURL: undefined; passcode?: string };
   signIn?(passcode?: string): Promise<void>;
   signOut?(): Promise<void>;
@@ -66,7 +66,7 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
   } else {
     contextValue = {
       ...contextValue,
-      getToken: async (user_identity, room_name) => {
+      getVideopolisToken: async () => {
         const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || '/token';
 
         return fetch(endpoint, {
@@ -74,11 +74,6 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
           headers: {
             'content-type': 'application/json',
           },
-          body: JSON.stringify({
-            user_identity,
-            room_name,
-            create_conversation: process.env.REACT_APP_DISABLE_TWILIO_CONVERSATIONS !== 'true',
-          }),
         }).then(res => res.json());
       },
       updateRecordingRules: async (room_sid, rules) => {
@@ -109,21 +104,21 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
     };
   }
 
-  const getToken: StateContextType['getToken'] = (name, room) => {
-    setIsFetching(true);
-    return contextValue
-      .getToken(name, room)
-      .then(res => {
-        setRoomType(res.room_type);
-        setIsFetching(false);
-        return res;
-      })
-      .catch(err => {
-        setError(err);
-        setIsFetching(false);
-        return Promise.reject(err);
-      });
-  };
+  // const getToken: StateContextType['getToken'] = (name, room) => {
+  //   setIsFetching(true);
+  //   return contextValue
+  //     .getToken(name, room)
+  //     .then(res => {
+  //       setRoomType(res.room_type);
+  //       setIsFetching(false);
+  //       return res;
+  //     })
+  //     .catch(err => {
+  //       setError(err);
+  //       setIsFetching(false);
+  //       return Promise.reject(err);
+  //     });
+  // };
 
   const updateRecordingRules: StateContextType['updateRecordingRules'] = (room_sid, rules) => {
     setIsFetching(true);
@@ -141,9 +136,7 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
   };
 
   return (
-    <StateContext.Provider value={{ ...contextValue, getToken, updateRecordingRules }}>
-      {props.children}
-    </StateContext.Provider>
+    <StateContext.Provider value={{ ...contextValue, updateRecordingRules }}>{props.children}</StateContext.Provider>
   );
 }
 

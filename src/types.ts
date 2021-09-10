@@ -45,3 +45,19 @@ export type RecordingRule = {
 };
 
 export type RecordingRules = RecordingRule[];
+
+//Videopolis types
+export interface Room {
+  id: string;
+  uniqueName: string;
+  displayName: string;
+  status: string;
+  durations: number;
+  properties: RoomProperties;
+}
+
+export interface RoomProperties {
+  created: string;
+  modified: string;
+  participantCount: number;
+}

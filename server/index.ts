@@ -39,7 +39,6 @@ app.all('/token', (req, r, next) => {
     console.error(error)
   })
 });
-
 app.use((req, res, next) => {
   // Here we add Cache-Control headers in accordance with the create-react-app best practices.
   // See: https://create-react-app.dev/docs/production-build/#static-file-caching

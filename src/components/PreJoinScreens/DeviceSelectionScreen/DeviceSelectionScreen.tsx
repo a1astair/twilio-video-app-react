@@ -60,17 +60,10 @@ interface DeviceSelectionScreenProps {
 
 export default function DeviceSelectionScreen({ name, roomName, setStep }: DeviceSelectionScreenProps) {
   const classes = useStyles();
-  const { getToken, isFetching } = useAppState();
+  const { isFetching } = useAppState();
   const { connect: chatConnect } = useChatContext();
   const { connect: videoConnect, isAcquiringLocalTracks, isConnecting } = useVideoContext();
   const disableButtons = isFetching || isAcquiringLocalTracks || isConnecting;
-
-  const handleJoin = () => {
-    getToken(name, roomName).then(({ token }) => {
-      videoConnect(token);
-      process.env.REACT_APP_DISABLE_TWILIO_CONVERSATIONS !== 'true' && chatConnect(token);
-    });
-  };
 
   if (isFetching || isConnecting) {
     return (
@@ -118,13 +111,7 @@ export default function DeviceSelectionScreen({ name, roomName, setStep }: Devic
               <Button variant="outlined" color="primary" onClick={() => setStep(Steps.roomNameStep)}>
                 Cancel
               </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                data-cy-join-now
-                onClick={handleJoin}
-                disabled={disableButtons}
-              >
+              <Button variant="contained" color="primary" data-cy-join-now disabled={disableButtons}>
                 Join Now
               </Button>
             </div>
