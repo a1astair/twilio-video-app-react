@@ -27,6 +27,14 @@ const useStyles = makeStyles((theme: Theme) => ({
       width: '100%',
     },
   },
+  roomGrid: {
+    maxHeight: '250px',
+    overflow: 'scroll',
+  },
+  room: {
+    display: 'flex',
+    margin: '5px 5px 0 0',
+  },
 }));
 
 export default function RoomListScreen() {
@@ -35,9 +43,9 @@ export default function RoomListScreen() {
   const [rooms, setRooms] = useState<Room[]>();
   const [videoToken, setVideoToken] = useState<string>('');
 
+  //This seems to fire off twice
   useEffect(() => {
     if (!videoToken) {
-      console.log('hi');
       getVideopolisToken().then(({ token }) => {
         setVideoToken(token);
       });
@@ -59,16 +67,17 @@ export default function RoomListScreen() {
       <Typography variant="h5" className={classes.gutterBottom}>
         Room List
       </Typography>
-      <Grid container justifyContent="flex-end">
+      <Grid container justifyContent="flex-start" className={classes.roomGrid}>
         {rooms &&
           rooms.map(room => (
-            <div>
-              <div>room.id</div>
-              <div>room.uniqueName</div>
-              <div>room.displayName</div>
-              <div>room.status</div>
-              <div>room.properties.created</div>
-              <div>room.properties.participantCount</div>
+            <div key={room.id} className={classes.room}>
+              <div>
+                <strong>Name:</strong> {room.displayName}
+              </div>
+              &nbsp;&nbsp;
+              <div>
+                <strong>Status:</strong> {room.status}
+              </div>
             </div>
           ))}
       </Grid>

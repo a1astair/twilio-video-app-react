@@ -19,6 +19,9 @@ const videopolisTokenAxios = {
     'content-type': 'application/x-www-form-urlencoded'
   } 
 }
+
+//get Room options
+const getRoomUrl = 'https://videopolis.development.telmediq.com/api/videopolis/rooms/'
 const app = express();
 app.use(express.json());
 
@@ -39,6 +42,25 @@ app.all('/token', (req, r, next) => {
     console.error(error)
   })
 });
+//GetRooms Api Call
+app.get('/getRooms', (req, res, next) => {
+  if (!req.query.token) {
+    res.json({})
+    next()
+  }
+  const token = req.query.token as string;
+  axios.get(getRoomUrl, { headers: { 'Authorization': 'Bearer '+ token}})
+  .then(r => {
+    if (r.status === 200 && r.data) {
+      //return the data
+      res.json(r.data)
+      next()
+    }
+  })
+  .catch(error => {
+    console.error(error)
+  })
+})
 app.use((req, res, next) => {
   // Here we add Cache-Control headers in accordance with the create-react-app best practices.
   // See: https://create-react-app.dev/docs/production-build/#static-file-caching
@@ -49,6 +71,7 @@ app.use((req, res, next) => {
   }
   next();
 });
+
 app.use(express.static(path.join(__dirname, '../build')));
 
 app.get('*', (_, res) => {
