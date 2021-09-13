@@ -35,6 +35,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     margin: '5px 5px 0 0',
   },
+  joinButton: {
+    marginLeft: '10px',
+  },
 }));
 
 export default function RoomListScreen() {
@@ -62,6 +65,10 @@ export default function RoomListScreen() {
       });
     }
   }, [videoToken]);
+
+  const joinRoom = (room: Room) => {
+    //TODO: Ask the api to join the room and load the proper component after api has confirmed the information
+  };
   return (
     <>
       <Typography variant="h5" className={classes.gutterBottom}>
@@ -78,6 +85,9 @@ export default function RoomListScreen() {
               <div>
                 <strong>Status:</strong> {room.status}
               </div>
+              <button className={classes.joinButton} onClick={() => joinRoom(room)}>
+                Join
+              </button>
             </div>
           ))}
       </Grid>
