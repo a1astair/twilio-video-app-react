@@ -28,5 +28,23 @@ export const getRooms = async (token: string) => {
     }
   } catch (err) {
     console.log(err);
+    return null;
+  }
+};
+
+export const getTwilioToken = async (token: string, roomIdentity: string, participantIdentity: string) => {
+  if (!token || !roomIdentity || !participantIdentity) {
+    return;
+  }
+  try {
+    const response = await axios.get('/getTwilioToken', {
+      params: { token, roomIdentity, participantIdentity },
+    });
+    if (response.status === 200 && response.data.results) {
+      return response.data.results;
+    }
+  } catch (err) {
+    console.log(err);
+    return null;
   }
 };

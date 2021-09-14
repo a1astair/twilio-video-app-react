@@ -21,8 +21,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   innerContainer: {
     display: 'flex',
-    width: '888px',
-    height: '379px',
+    width: '1000px',
+    height: '500px',
     borderRadius: '8px',
     boxShadow: '0px 2px 4px 0px rgba(40, 42, 43, 0.3)',
     overflow: 'hidden',

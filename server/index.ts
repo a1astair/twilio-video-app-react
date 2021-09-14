@@ -22,6 +22,9 @@ const videopolisTokenAxios = {
 
 //get Room options
 const getRoomUrl = 'https://videopolis.development.telmediq.com/api/videopolis/rooms/'
+
+//get Twilio token
+const getTwilioTokenUrl = (roomIdentity: string, participantIdentity: string): string => 'https://videopolis.development.telmediq.com/api/videopolis/rooms/'+roomIdentity+'/participants/'+participantIdentity+'/token/'
 const app = express();
 app.use(express.json());
 
@@ -50,6 +53,26 @@ app.get('/getRooms', (req, res, next) => {
   }
   const token = req.query.token as string;
   axios.get(getRoomUrl, { headers: { 'Authorization': 'Bearer '+ token}})
+  .then(r => {
+    if (r.status === 200 && r.data) {
+      //return the data
+      res.json(r.data)
+      next()
+    }
+  })
+  .catch(error => {
+    console.error(error)
+  })
+})
+//Get Twilio Token Api Call
+app.get('/getTwilioToken', (req, res, next) => {
+  if (!req.query.token || !req.query.roomIdentity || !req.query.participantIdentity) {
+    res.json({})
+    next()
+  }
+  const getUrl = getTwilioTokenUrl(req.query.roomIdentity as string, req.query.participantIdentity as string);
+  const token = req.query.token as string;
+  axios.get(getUrl, { headers: { 'Authorization': 'Bearer '+ token}})
   .then(r => {
     if (r.status === 200 && r.data) {
       //return the data
