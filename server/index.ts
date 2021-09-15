@@ -20,11 +20,11 @@ const videopolisTokenAxios = {
   } 
 }
 
-//get Room options
+//getter Urls
 const getRoomUrl = 'https://videopolis.development.telmediq.com/api/videopolis/rooms/'
-
-//get Twilio token
+const getRoomDetailUrl = (roomIdentity: string): string => 'https://videopolis.development.telmediq.com/api/videopolis/rooms/'+roomIdentity;
 const getTwilioTokenUrl = (roomIdentity: string, participantIdentity: string): string => 'https://videopolis.development.telmediq.com/api/videopolis/rooms/'+roomIdentity+'/participants/'+participantIdentity+'/token/'
+
 const app = express();
 app.use(express.json());
 
@@ -64,6 +64,27 @@ app.get('/getRooms', (req, res, next) => {
     console.error(error)
   })
 })
+//GetParticipants Api Call
+app.get('/getRoomDetails', (req, res, next) => {
+  if (!req.query.token || !req.query.roomIdentity) {
+    res.json({})
+    next()
+  }
+  const token = req.query.token as string;
+  const roomId = req.query.roomIdentity as string;
+  const getUrl = getRoomDetailUrl(roomId);
+  axios.get(getUrl, { headers: { 'Authorization': 'Bearer '+ token}})
+  .then(r => {
+    if (r.status === 200 && r.data) {
+      //return the data
+      res.json(r.data)
+      next()
+    }
+  })
+  .catch(error => {
+    console.error(error)
+  })
+})
 //Get Twilio Token Api Call
 app.get('/getTwilioToken', (req, res, next) => {
   if (!req.query.token || !req.query.roomIdentity || !req.query.participantIdentity) {
@@ -74,9 +95,9 @@ app.get('/getTwilioToken', (req, res, next) => {
   const token = req.query.token as string;
   axios.get(getUrl, { headers: { 'Authorization': 'Bearer '+ token}})
   .then(r => {
-    if (r.status === 200 && r.data) {
-      //return the data
-      res.json(r.data)
+    if (r.status === 200 && r.data && r.data.token) {
+      //return the data and the room type hardcoded to peer-to-peer for now
+      res.json({...r.data, roomType: 'peer-to-peer'})
       next()
     }
   })

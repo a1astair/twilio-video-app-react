@@ -32,6 +32,23 @@ export const getRooms = async (token: string) => {
   }
 };
 
+export const getRoomDetails = async (token: string, roomIdentity: string) => {
+  if (!token || !roomIdentity) {
+    return;
+  }
+  try {
+    const response = await axios.get('/getRoomDetails', {
+      params: { roomIdentity, token },
+    });
+    if (response.status === 200 && response.data) {
+      return response.data;
+    }
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
+
 export const getTwilioToken = async (token: string, roomIdentity: string, participantIdentity: string) => {
   if (!token || !roomIdentity || !participantIdentity) {
     return;
@@ -40,8 +57,8 @@ export const getTwilioToken = async (token: string, roomIdentity: string, partic
     const response = await axios.get('/getTwilioToken', {
       params: { token, roomIdentity, participantIdentity },
     });
-    if (response.status === 200 && response.data.results) {
-      return response.data.results;
+    if (response.status === 200 && response.data) {
+      return response.data;
     }
   } catch (err) {
     console.log(err);

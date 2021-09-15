@@ -1,8 +1,9 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Typography, makeStyles, TextField, Grid, Button, InputLabel, Theme } from '@material-ui/core';
 import { useAppState } from '../../../state';
-import { Room } from '../../../types';
-import { getRooms, getTwilioToken } from '../RoomListScreen/actions';
+import { Participant, Room, RoomType } from '../../../types';
+import { getRoomDetails, getRooms, getTwilioToken } from '../RoomListScreen/actions';
+import ParticipantList from '../../ParticipantList/ParticipantList';
 
 const useStyles = makeStyles((theme: Theme) => ({
   gutterBottom: {
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   roomGrid: {
-    maxHeight: '200px',
+    maxHeight: '350px',
     overflow: 'scroll',
   },
   room: {
@@ -37,6 +38,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   joinButton: {
     marginLeft: '10px',
+  },
+  participantGrid: {
+    maxHeight: '200px',
+    overflow: 'scroll',
+  },
+  participant: {
+    display: 'flex',
+    margin: '5px 5px 0 0',
   },
 }));
 
@@ -51,9 +60,13 @@ interface RoomNameScreenProps {
 export default function RoomNameScreen({ name, roomName, setName, setRoomName, handleSubmit }: RoomNameScreenProps) {
   const classes = useStyles();
   const { user } = useAppState();
-  const { getVideopolisToken } = useAppState();
+  const { getVideopolisToken, setTwilioToken } = useAppState();
   const [rooms, setRooms] = useState<Room[]>();
+  const [room, setRoom] = useState<Room>();
   const [videoToken, setVideoToken] = useState<string>('');
+  const [roomType, setRoomType] = useState<RoomType>();
+  const [participant, setParticipant] = useState<Participant>();
+  const [participants, setParticipants] = useState<Participant[]>();
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
   };
@@ -76,17 +89,33 @@ export default function RoomNameScreen({ name, roomName, setName, setRoomName, h
     if (videoToken) {
       getRooms(videoToken).then(res => {
         if (res) {
-          setRooms(res.filter((r: Room) => r.status === 'initialized'));
+          setRooms(res);
         }
       });
     }
   }, [videoToken]);
 
-  const joinRoom = (room: Room) => {
-    if (videoToken && room) {
+  const setRoomInfo = (room: Room) => {
+    if (room) {
+      setRoom(room);
       setRoomName(room.displayName);
-      getTwilioToken(videoToken, room.id, name).then(res => {
-        if (res) {
+      //Also get the participant info from the joined room
+      getRoomDetails(videoToken, room.id).then(res => {
+        if (res?.participants) {
+          setParticipants(res.participants);
+        }
+      });
+    }
+  };
+
+  const joinRoom = () => {
+    if (videoToken && room?.id && participant?.id) {
+      getTwilioToken(videoToken, room.id, participant.id).then(res => {
+        if (res && res.token) {
+          if (res.roomType) {
+            setRoomType(res.roomType);
+          }
+          setTwilioToken(res.token);
           // Got the token which we can send to twilio for video
         }
       });
@@ -96,12 +125,16 @@ export default function RoomNameScreen({ name, roomName, setName, setRoomName, h
   const roomList = () => (
     <>
       <Typography variant="h6" className={classes.gutterBottom}>
-        Room List
+        Pick a room to join
       </Typography>
       <Grid container justifyContent="flex-start" className={classes.roomGrid}>
         {rooms &&
           rooms.map((room: Room) => (
             <div key={room.id} className={classes.room}>
+              <div>
+                <strong>ID:</strong> {room.id}
+              </div>
+              &nbsp;&nbsp;
               <div>
                 <strong>Name:</strong> {room.displayName}
               </div>
@@ -109,8 +142,34 @@ export default function RoomNameScreen({ name, roomName, setName, setRoomName, h
               <div>
                 <strong>Status:</strong> {room.status}
               </div>
-              <button className={classes.joinButton} onClick={() => joinRoom(room)}>
+              <button className={classes.joinButton} onClick={() => setRoomInfo(room)}>
                 Join
+              </button>
+            </div>
+          ))}
+      </Grid>
+    </>
+  );
+
+  const participantList = () => (
+    <>
+      <Grid container justifyContent="flex-start" className={classes.participantGrid}>
+        {participants &&
+          participants.map((participant: Participant) => (
+            <div key={participant.id} className={classes.participant}>
+              <div>
+                <strong>ID:</strong> {participant.id}
+              </div>
+              &nbsp;&nbsp;
+              <div>
+                <strong>Name:</strong> {participant.displayName}
+              </div>
+              &nbsp;&nbsp;
+              <div>
+                <strong>Status:</strong> {participant.status}
+              </div>
+              <button className={classes.joinButton} onClick={() => setParticipant(participant)}>
+                Select
               </button>
             </div>
           ))}
@@ -122,55 +181,60 @@ export default function RoomNameScreen({ name, roomName, setName, setRoomName, h
 
   return (
     <>
-      <Typography variant="body1" className={classes.gutterBottom}>
-        Enter your name and pick a room you would like to join
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <div className={classes.inputContainer}>
-          {!hasUsername && (
-            <div className={classes.textFieldContainer}>
-              <InputLabel shrink htmlFor="input-user-name">
-                Your Name
-              </InputLabel>
-              <TextField
-                id="input-user-name"
-                variant="outlined"
-                fullWidth
-                size="small"
-                value={name}
-                onChange={handleNameChange}
-              />
+      {!room && roomList()}
+      {room && (
+        <>
+          <Typography variant="body1" className={classes.gutterBottom}>
+            Pick your participant
+          </Typography>
+          {participantList()}
+          <form onSubmit={handleSubmit}>
+            <div className={classes.inputContainer}>
+              {!hasUsername && (
+                <div className={classes.textFieldContainer}>
+                  <InputLabel shrink htmlFor="input-user-name">
+                    Participant Name
+                  </InputLabel>
+                  <TextField
+                    id="input-user-name"
+                    variant="outlined"
+                    disabled={true}
+                    fullWidth
+                    size="small"
+                    value={participant?.displayName}
+                  />
+                </div>
+              )}
+              <div className={classes.textFieldContainer}>
+                <InputLabel shrink htmlFor="input-room-name">
+                  Room Name
+                </InputLabel>
+                <TextField
+                  disabled={true}
+                  autoCapitalize="false"
+                  id="input-room-name"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  value={roomName}
+                />
+              </div>
             </div>
-          )}
-          <div className={classes.textFieldContainer}>
-            <InputLabel shrink htmlFor="input-room-name">
-              Room Name
-            </InputLabel>
-            <TextField
-              disabled={true}
-              autoCapitalize="false"
-              id="input-room-name"
-              variant="outlined"
-              fullWidth
-              size="small"
-              value={roomName}
-              onChange={handleRoomNameChange}
-            />
-          </div>
-        </div>
-        <Grid container justifyContent="flex-end">
-          <Button
-            variant="contained"
-            type="submit"
-            color="primary"
-            disabled={!name || !roomName}
-            className={classes.continueButton}
-          >
-            Continue
-          </Button>
-        </Grid>
-      </form>
-      {roomList()}
+            <Grid container justifyContent="flex-end">
+              <Button
+                variant="contained"
+                type="submit"
+                color="primary"
+                disabled={!participant?.displayName || !roomName}
+                onClick={() => joinRoom()}
+                className={classes.continueButton}
+              >
+                Continue
+              </Button>
+            </Grid>
+          </form>
+        </>
+      )}
     </>
   );
 }

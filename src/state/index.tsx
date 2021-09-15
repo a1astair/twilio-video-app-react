@@ -22,6 +22,8 @@ export interface StateContextType {
   dispatchSetting: React.Dispatch<SettingsAction>;
   roomType?: RoomType;
   updateRecordingRules(room_sid: string, rules: RecordingRules): Promise<object>;
+  setTwilioToken(token: string): void;
+  twilioToken: string;
 }
 
 export const StateContext = createContext<StateContextType>(null!);
@@ -41,6 +43,7 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
   const [activeSinkId, setActiveSinkId] = useActiveSinkId();
   const [settings, dispatchSetting] = useReducer(settingsReducer, initialSettings);
   const [roomType, setRoomType] = useState<RoomType>();
+  const [twilioToken, setTwilioToken] = useState<string>('');
 
   let contextValue = {
     error,
@@ -51,6 +54,8 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
     settings,
     dispatchSetting,
     roomType,
+    twilioToken,
+    setTwilioToken,
   } as StateContextType;
 
   if (process.env.REACT_APP_SET_AUTH === 'firebase') {
@@ -103,22 +108,6 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
       },
     };
   }
-
-  // const getToken: StateContextType['getToken'] = (name, room) => {
-  //   setIsFetching(true);
-  //   return contextValue
-  //     .getToken(name, room)
-  //     .then(res => {
-  //       setRoomType(res.room_type);
-  //       setIsFetching(false);
-  //       return res;
-  //     })
-  //     .catch(err => {
-  //       setError(err);
-  //       setIsFetching(false);
-  //       return Promise.reject(err);
-  //     });
-  // };
 
   const updateRecordingRules: StateContextType['updateRecordingRules'] = (room_sid, rules) => {
     setIsFetching(true);

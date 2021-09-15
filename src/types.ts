@@ -61,3 +61,16 @@ export interface RoomProperties {
   modified: string;
   participantCount: number;
 }
+
+export interface Participant {
+  id: string;
+  uniqueName: string;
+  displayName: string;
+  status: string;
+  role: string;
+  connected: string;
+  disconnected: string;
+  properties: object;
+  created: string;
+  modified: string;
+}
