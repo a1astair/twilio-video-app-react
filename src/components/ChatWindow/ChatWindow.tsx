@@ -1,31 +1,33 @@
-import React from 'react';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import ChatWindowHeader from './ChatWindowHeader/ChatWindowHeader';
-import ChatInput from './ChatInput/ChatInput';
-import clsx from 'clsx';
-import MessageList from './MessageList/MessageList';
-import useChatContext from '../../hooks/useChatContext/useChatContext';
+import React from "react";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import clsx from "clsx";
+
+import useChatContext from "../../hooks/useChatContext/useChatContext";
+
+import ChatInput from "./ChatInput/ChatInput";
+import ChatWindowHeader from "./ChatWindowHeader/ChatWindowHeader";
+import MessageList from "./MessageList/MessageList";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     chatWindowContainer: {
-      background: '#FFFFFF',
+      background: "#FFFFFF",
       zIndex: 9,
-      display: 'flex',
-      flexDirection: 'column',
-      borderLeft: '1px solid #E4E7E9',
-      [theme.breakpoints.down('sm')]: {
-        position: 'fixed',
+      display: "flex",
+      flexDirection: "column",
+      borderLeft: "1px solid #E4E7E9",
+      [theme.breakpoints.down("sm")]: {
+        position: "fixed",
         top: 0,
         left: 0,
         bottom: 0,
         right: 0,
-        zIndex: 100,
-      },
+        zIndex: 100
+      }
     },
     hide: {
-      display: 'none',
-    },
+      display: "none"
+    }
   })
 );
 

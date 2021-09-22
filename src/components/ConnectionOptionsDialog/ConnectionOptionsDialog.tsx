@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback } from "react";
 import {
   Button,
   Dialog,
@@ -13,51 +13,52 @@ import {
   Select,
   TextField,
   Theme,
-  Typography,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { inputLabels, Settings } from '../../state/settings/settingsReducer';
-import { useAppState } from '../../state';
-import useRoomState from '../../hooks/useRoomState/useRoomState';
+  Typography
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
+import useRoomState from "../../hooks/useRoomState/useRoomState";
+import { useAppState } from "../../state";
+import { inputLabels, Settings } from "../../state/settings/settingsReducer";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
-    width: '600px',
-    minHeight: '400px',
-    [theme.breakpoints.down('xs')]: {
-      width: 'calc(100vw - 32px)',
+    width: "600px",
+    minHeight: "400px",
+    [theme.breakpoints.down("xs")]: {
+      width: "calc(100vw - 32px)"
     },
-    '& .inputSelect': {
-      width: 'calc(100% - 35px)',
-    },
+    "& .inputSelect": {
+      width: "calc(100% - 35px)"
+    }
   },
   button: {
-    float: 'right',
+    float: "right"
   },
   paper: {
-    [theme.breakpoints.down('xs')]: {
-      margin: '16px',
-    },
+    [theme.breakpoints.down("xs")]: {
+      margin: "16px"
+    }
   },
   formControl: {
-    display: 'block',
-    margin: '1.5em 0',
-    '&:first-child': {
-      margin: '0 0 1.5em 0',
-    },
+    display: "block",
+    margin: "1.5em 0",
+    "&:first-child": {
+      margin: "0 0 1.5em 0"
+    }
   },
   label: {
-    width: '133%', // Labels have scale(0.75) applied to them, so this effectively makes the width 100%
-  },
+    width: "133%" // Labels have scale(0.75) applied to them, so this effectively makes the width 100%
+  }
 }));
 
-const withDefault = (val?: string) => (typeof val === 'undefined' ? 'default' : val);
+const withDefault = (val?: string) => (typeof val === "undefined" ? "default" : val);
 
 export default function ConnectionOptionsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const classes = useStyles();
   const { settings, dispatchSetting } = useAppState();
   const roomState = useRoomState();
-  const isDisabled = roomState !== 'disconnected';
+  const isDisabled = roomState !== "disconnected";
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<{ value: unknown; name?: string }>) => {

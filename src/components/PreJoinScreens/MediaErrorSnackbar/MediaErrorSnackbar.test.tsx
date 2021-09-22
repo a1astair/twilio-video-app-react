@@ -1,59 +1,61 @@
-import React from 'react';
-import MediaErrorSnackBar, { getSnackbarContent } from './MediaErrorSnackbar';
-import { shallow } from 'enzyme';
-import useDevices from '../../../hooks/useDevices/useDevices';
-import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import React from "react";
+import { shallow } from "enzyme";
 
-jest.mock('../../../hooks/useVideoContext/useVideoContext');
-jest.mock('../../../hooks/useDevices/useDevices');
+import useDevices from "../../../hooks/useDevices/useDevices";
+import useVideoContext from "../../../hooks/useVideoContext/useVideoContext";
+
+import MediaErrorSnackBar, { getSnackbarContent } from "./MediaErrorSnackbar";
+
+jest.mock("../../../hooks/useVideoContext/useVideoContext");
+jest.mock("../../../hooks/useDevices/useDevices");
 
 const mockUseVideoContext = useVideoContext as jest.Mock<any>;
 const mockUseDevices = useDevices as jest.Mock<any>;
 
-describe('the MediaErrorSnackBar', () => {
+describe("the MediaErrorSnackBar", () => {
   beforeEach(() => {
     mockUseVideoContext.mockImplementation(() => ({ isAcquiringLocalTracks: false }));
     mockUseDevices.mockImplementation(() => ({ hasAudioInputDevices: true, hasVideoInputDevices: true }));
   });
 
-  it('should be closed by default', () => {
+  it("should be closed by default", () => {
     const wrapper = shallow(<MediaErrorSnackBar />);
-    expect(wrapper.prop('open')).toBe(false);
+    expect(wrapper.prop("open")).toBe(false);
   });
 
-  it('should open when there is an error', () => {
-    const wrapper = shallow(<MediaErrorSnackBar error={new Error('testError')} />);
-    expect(wrapper.prop('open')).toBe(true);
+  it("should open when there is an error", () => {
+    const wrapper = shallow(<MediaErrorSnackBar error={new Error("testError")} />);
+    expect(wrapper.prop("open")).toBe(true);
   });
 
-  it('should open when there are no audio devices', () => {
+  it("should open when there are no audio devices", () => {
     mockUseDevices.mockImplementation(() => ({ hasAudioInputDevices: false, hasVideoInputDevices: true }));
     const wrapper = shallow(<MediaErrorSnackBar />);
-    expect(wrapper.prop('open')).toBe(true);
+    expect(wrapper.prop("open")).toBe(true);
   });
 
-  it('should open when there are no video devices', () => {
+  it("should open when there are no video devices", () => {
     mockUseDevices.mockImplementation(() => ({ hasAudioInputDevices: true, hasVideoInputDevices: false }));
     const wrapper = shallow(<MediaErrorSnackBar />);
-    expect(wrapper.prop('open')).toBe(true);
+    expect(wrapper.prop("open")).toBe(true);
   });
 
-  it('should not open when there local tracks are being acquired', () => {
+  it("should not open when there local tracks are being acquired", () => {
     mockUseVideoContext.mockImplementation(() => ({ isAcquiringLocalTracks: true }));
-    const wrapper = shallow(<MediaErrorSnackBar error={new Error('testError')} />);
-    expect(wrapper.prop('open')).toBe(false);
+    const wrapper = shallow(<MediaErrorSnackBar error={new Error("testError")} />);
+    expect(wrapper.prop("open")).toBe(false);
   });
 
-  it('should close after the handleClose function is called', () => {
-    const wrapper = shallow(<MediaErrorSnackBar error={new Error('testError')} />);
-    expect(wrapper.prop('open')).toBe(true);
-    wrapper.prop('handleClose')(); // Close snackbar
-    expect(wrapper.prop('open')).toBe(false);
+  it("should close after the handleClose function is called", () => {
+    const wrapper = shallow(<MediaErrorSnackBar error={new Error("testError")} />);
+    expect(wrapper.prop("open")).toBe(true);
+    wrapper.prop("handleClose")(); // Close snackbar
+    expect(wrapper.prop("open")).toBe(false);
   });
 });
 
-describe('the getSnackbarContent function', () => {
-  it('return empty strings by default', () => {
+describe("the getSnackbarContent function", () => {
+  it("return empty strings by default", () => {
     const results = getSnackbarContent(true, true);
     expect(results).toMatchInlineSnapshot(`
       Object {
@@ -63,7 +65,7 @@ describe('the getSnackbarContent function', () => {
     `);
   });
 
-  it('should return the correct content when there are no audio devices', () => {
+  it("should return the correct content when there are no audio devices", () => {
     const results = getSnackbarContent(false, true);
     expect(results).toMatchInlineSnapshot(`
       Object {
@@ -73,7 +75,7 @@ describe('the getSnackbarContent function', () => {
     `);
   });
 
-  it('should return the correct content when there are no video devices', () => {
+  it("should return the correct content when there are no video devices", () => {
     const results = getSnackbarContent(true, false);
     expect(results).toMatchInlineSnapshot(`
       Object {
@@ -83,7 +85,7 @@ describe('the getSnackbarContent function', () => {
     `);
   });
 
-  it('should return the correct content when there are no audio or video devices', () => {
+  it("should return the correct content when there are no audio or video devices", () => {
     const results = getSnackbarContent(false, false);
     expect(results).toMatchInlineSnapshot(`
       Object {
@@ -93,9 +95,9 @@ describe('the getSnackbarContent function', () => {
     `);
   });
 
-  it('should return the correct content when there is a NotAllowedError', () => {
+  it("should return the correct content when there is a NotAllowedError", () => {
     const error = new Error();
-    error.name = 'NotAllowedError';
+    error.name = "NotAllowedError";
     const results = getSnackbarContent(true, true, error);
     expect(results).toMatchInlineSnapshot(`
       Object {
@@ -106,8 +108,8 @@ describe('the getSnackbarContent function', () => {
   });
 
   it('should return the correct content when there is a NotAllowedError with "Permission denied by syste" message', () => {
-    const error = new Error('Permission denied by system');
-    error.name = 'NotAllowedError';
+    const error = new Error("Permission denied by system");
+    error.name = "NotAllowedError";
     const results = getSnackbarContent(true, true, error);
     expect(results).toMatchInlineSnapshot(`
       Object {
@@ -117,9 +119,9 @@ describe('the getSnackbarContent function', () => {
     `);
   });
 
-  it('should return the correct content when there is a NotFoundError', () => {
+  it("should return the correct content when there is a NotFoundError", () => {
     const error = new Error();
-    error.name = 'NotFoundError';
+    error.name = "NotFoundError";
     const results = getSnackbarContent(true, true, error);
     expect(results).toMatchInlineSnapshot(`
       Object {
@@ -129,9 +131,9 @@ describe('the getSnackbarContent function', () => {
     `);
   });
 
-  it('should return the correct content when there is any other kind of error', () => {
-    const error = new Error('Any other device errors');
-    error.name = 'OtherDeviceError';
+  it("should return the correct content when there is any other kind of error", () => {
+    const error = new Error("Any other device errors");
+    error.name = "OtherDeviceError";
     const results = getSnackbarContent(true, true, error);
     expect(results).toMatchInlineSnapshot(`
       Object {
@@ -141,8 +143,8 @@ describe('the getSnackbarContent function', () => {
     `);
   });
 
-  it('should return the correct content when there is a CameraPermissionsDenied error', () => {
-    const error = new Error('CameraPermissionsDenied');
+  it("should return the correct content when there is a CameraPermissionsDenied error", () => {
+    const error = new Error("CameraPermissionsDenied");
     const results = getSnackbarContent(true, true, error);
     expect(results).toMatchInlineSnapshot(`
       Object {
@@ -152,8 +154,8 @@ describe('the getSnackbarContent function', () => {
     `);
   });
 
-  it('should return the correct content when there is a MicrophonePermissionsDenied error', () => {
-    const error = new Error('MicrophonePermissionsDenied');
+  it("should return the correct content when there is a MicrophonePermissionsDenied error", () => {
+    const error = new Error("MicrophonePermissionsDenied");
     const results = getSnackbarContent(true, true, error);
     expect(results).toMatchInlineSnapshot(`
       Object {

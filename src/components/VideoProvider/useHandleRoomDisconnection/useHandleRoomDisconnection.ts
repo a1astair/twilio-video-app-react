@@ -1,7 +1,7 @@
-import { Room, TwilioError } from 'twilio-video';
-import { useEffect } from 'react';
+import { useEffect } from "react";
+import { Room, TwilioError } from "twilio-video";
 
-import { Callback } from '../../../types';
+import { Callback } from "../../../types";
 
 export default function useHandleRoomDisconnection(
   room: Room | null,
@@ -25,9 +25,9 @@ export default function useHandleRoomDisconnection(
         }
       };
 
-      room.on('disconnected', onDisconnected);
+      room.on("disconnected", onDisconnected);
       return () => {
-        room.off('disconnected', onDisconnected);
+        room.off("disconnected", onDisconnected);
       };
     }
   }, [room, onError, removeLocalAudioTrack, removeLocalVideoTrack, isSharingScreen, toggleScreenShare]);

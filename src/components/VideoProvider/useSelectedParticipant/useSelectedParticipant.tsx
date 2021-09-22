@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Participant, Room } from 'twilio-video';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { Participant, Room } from "twilio-video";
 
 type selectedParticipantContextType = [Participant | null, (participant: Participant) => void];
 
@@ -26,11 +26,11 @@ export function SelectedParticipantProvider({ room, children }: SelectedParticip
       const handleParticipantDisconnected = (participant: Participant) =>
         _setSelectedParticipant(prevParticipant => (prevParticipant === participant ? null : prevParticipant));
 
-      room.on('disconnected', onDisconnect);
-      room.on('participantDisconnected', handleParticipantDisconnected);
+      room.on("disconnected", onDisconnect);
+      room.on("participantDisconnected", handleParticipantDisconnected);
       return () => {
-        room.off('disconnected', onDisconnect);
-        room.off('participantDisconnected', handleParticipantDisconnected);
+        room.off("disconnected", onDisconnect);
+        room.off("participantDisconnected", handleParticipantDisconnected);
       };
     }
   }, [room]);

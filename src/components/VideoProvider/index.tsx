@@ -1,16 +1,17 @@
-import React, { createContext, ReactNode, useCallback, useState } from 'react';
-import { CreateLocalTrackOptions, ConnectOptions, LocalAudioTrack, LocalVideoTrack, Room } from 'twilio-video';
-import { ErrorCallback } from '../../types';
-import { SelectedParticipantProvider } from './useSelectedParticipant/useSelectedParticipant';
+import React, { createContext, ReactNode, useCallback, useState } from "react";
+import { ConnectOptions, CreateLocalTrackOptions, LocalAudioTrack, LocalVideoTrack, Room } from "twilio-video";
 
-import AttachVisibilityHandler from './AttachVisibilityHandler/AttachVisibilityHandler';
-import useBackgroundSettings, { BackgroundSettings } from './useBackgroundSettings/useBackgroundSettings';
-import useHandleRoomDisconnection from './useHandleRoomDisconnection/useHandleRoomDisconnection';
-import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/useHandleTrackPublicationFailed';
-import useLocalTracks from './useLocalTracks/useLocalTracks';
-import useRestartAudioTrackOnDeviceChange from './useRestartAudioTrackOnDeviceChange/useRestartAudioTrackOnDeviceChange';
-import useRoom from './useRoom/useRoom';
-import useScreenShareToggle from './useScreenShareToggle/useScreenShareToggle';
+import { ErrorCallback } from "../../types";
+
+import AttachVisibilityHandler from "./AttachVisibilityHandler/AttachVisibilityHandler";
+import useBackgroundSettings, { BackgroundSettings } from "./useBackgroundSettings/useBackgroundSettings";
+import useHandleRoomDisconnection from "./useHandleRoomDisconnection/useHandleRoomDisconnection";
+import useHandleTrackPublicationFailed from "./useHandleTrackPublicationFailed/useHandleTrackPublicationFailed";
+import useLocalTracks from "./useLocalTracks/useLocalTracks";
+import useRestartAudioTrackOnDeviceChange from "./useRestartAudioTrackOnDeviceChange/useRestartAudioTrackOnDeviceChange";
+import useRoom from "./useRoom/useRoom";
+import useScreenShareToggle from "./useScreenShareToggle/useScreenShareToggle";
+import { SelectedParticipantProvider } from "./useSelectedParticipant/useSelectedParticipant";
 
 /*
  *  The hooks used by the VideoProvider component are different than the hooks found in the 'hooks/' directory. The hooks
@@ -49,7 +50,6 @@ interface VideoProviderProps {
 export function VideoProvider({ options, children, onError = () => {} }: VideoProviderProps) {
   const onErrorCallback: ErrorCallback = useCallback(
     error => {
-      console.log(`ERROR: ${error.message}`, error);
       onError(error);
     },
     [onError]
@@ -62,7 +62,7 @@ export function VideoProvider({ options, children, onError = () => {} }: VideoPr
     isAcquiringLocalTracks,
     removeLocalAudioTrack,
     removeLocalVideoTrack,
-    getAudioAndVideoTracks,
+    getAudioAndVideoTracks
   } = useLocalTracks();
   const { room, isConnecting, connect } = useRoom(localTracks, onErrorCallback, options);
 
@@ -81,7 +81,7 @@ export function VideoProvider({ options, children, onError = () => {} }: VideoPr
   useRestartAudioTrackOnDeviceChange(localTracks);
 
   const [isBackgroundSelectionOpen, setIsBackgroundSelectionOpen] = useState(false);
-  const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack | undefined;
+  const videoTrack = localTracks.find(track => track.name.includes("camera")) as LocalVideoTrack | undefined;
   const [backgroundSettings, setBackgroundSettings] = useBackgroundSettings(videoTrack, room);
 
   return (
@@ -102,7 +102,7 @@ export function VideoProvider({ options, children, onError = () => {} }: VideoPr
         isBackgroundSelectionOpen,
         setIsBackgroundSelectionOpen,
         backgroundSettings,
-        setBackgroundSettings,
+        setBackgroundSettings
       }}
     >
       <SelectedParticipantProvider room={room}>{children}</SelectedParticipantProvider>

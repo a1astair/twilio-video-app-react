@@ -1,8 +1,9 @@
-import { shallow } from 'enzyme';
-import React from 'react';
-import Snackbar from './Snackbar';
+import React from "react";
+import { shallow } from "enzyme";
 
-describe('the Snackbar component', () => {
+import Snackbar from "./Snackbar";
+
+describe("the Snackbar component", () => {
   it('should render correctly with "warning" variant', () => {
     const wrapper = shallow(
       <Snackbar variant="warning" headline="Test Headline" message="Test Message" handleClose={() => {}} open={true} />
@@ -24,12 +25,12 @@ describe('the Snackbar component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('should render correctly with no handleClose function provided', () => {
+  it("should render correctly with no handleClose function provided", () => {
     const wrapper = shallow(<Snackbar variant="error" headline="Test Headline" message="Test Message" open={true} />);
     expect(wrapper).toMatchSnapshot();
   });
 
-  describe('the handleClose function', () => {
+  describe("the handleClose function", () => {
     beforeEach(jest.clearAllMocks);
 
     const mockHandleClose = jest.fn();
@@ -43,13 +44,13 @@ describe('the Snackbar component', () => {
       />
     );
 
-    it('should be called when the onClose function is called', () => {
-      wrapper.prop('onClose')();
+    it("should be called when the onClose function is called", () => {
+      wrapper.prop("onClose")();
       expect(mockHandleClose).toHaveBeenCalled();
     });
 
     it('should be called when the onClose function is called with the "clickaway" reason', () => {
-      wrapper.prop('onClose')({}, 'clickaway');
+      wrapper.prop("onClose")({}, "clickaway");
       expect(mockHandleClose).not.toHaveBeenCalled();
     });
   });

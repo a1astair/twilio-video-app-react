@@ -1,16 +1,16 @@
-import React from 'react';
-import useTrack from '../../hooks/useTrack/useTrack';
-import AudioTrack from '../AudioTrack/AudioTrack';
-import VideoTrack from '../VideoTrack/VideoTrack';
-
-import { IVideoTrack } from '../../types';
+import React from "react";
 import {
   AudioTrack as IAudioTrack,
   LocalTrackPublication,
   Participant,
   RemoteTrackPublication,
-  Track,
-} from 'twilio-video';
+  Track
+} from "twilio-video";
+
+import useTrack from "../../hooks/useTrack/useTrack";
+import { IVideoTrack } from "../../types";
+import AudioTrack from "../AudioTrack/AudioTrack";
+import VideoTrack from "../VideoTrack/VideoTrack";
 
 interface PublicationProps {
   publication: LocalTrackPublication | RemoteTrackPublication;
@@ -26,15 +26,15 @@ export default function Publication({ publication, isLocalParticipant, videoOnly
   if (!track) return null;
 
   switch (track.kind) {
-    case 'video':
+    case "video":
       return (
         <VideoTrack
           track={track as IVideoTrack}
           priority={videoPriority}
-          isLocal={track.name.includes('camera') && isLocalParticipant}
+          isLocal={track.name.includes("camera") && isLocalParticipant}
         />
       );
-    case 'audio':
+    case "audio":
       return videoOnly ? null : <AudioTrack track={track as IAudioTrack} />;
     default:
       return null;

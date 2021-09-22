@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Participant } from 'twilio-video';
+import { useEffect, useState } from "react";
+import { Participant } from "twilio-video";
 
 export default function useParticipantNetworkQualityLevel(participant: Participant) {
   const [networkQualityLevel, setNetworkQualityLevel] = useState(participant.networkQualityLevel);
@@ -9,9 +9,9 @@ export default function useParticipantNetworkQualityLevel(participant: Participa
       setNetworkQualityLevel(newNetworkQualityLevel);
 
     setNetworkQualityLevel(participant.networkQualityLevel);
-    participant.on('networkQualityLevelChanged', handleNewtorkQualityLevelChange);
+    participant.on("networkQualityLevelChanged", handleNewtorkQualityLevelChange);
     return () => {
-      participant.off('networkQualityLevelChanged', handleNewtorkQualityLevelChange);
+      participant.off("networkQualityLevelChanged", handleNewtorkQualityLevelChange);
     };
   }, [participant]);
 

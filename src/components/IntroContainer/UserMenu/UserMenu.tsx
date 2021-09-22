@@ -1,28 +1,30 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { makeStyles, Typography, Button, MenuItem, Link } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { useAppState } from '../../../state';
-import UserAvatar from './UserAvatar/UserAvatar';
-import Menu from '@material-ui/core/Menu';
-import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import React, { useCallback, useRef, useState } from "react";
+import { Button, Link, makeStyles, MenuItem, Typography } from "@material-ui/core";
+import Menu from "@material-ui/core/Menu";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+
+import useVideoContext from "../../../hooks/useVideoContext/useVideoContext";
+import { useAppState } from "../../../state";
+
+import UserAvatar from "./UserAvatar/UserAvatar";
 
 const useStyles = makeStyles({
   userContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     right: 0,
-    margin: '1em',
-    display: 'flex',
-    alignItems: 'center',
+    margin: "1em",
+    display: "flex",
+    alignItems: "center"
   },
   userButton: {
-    color: 'white',
+    color: "white"
   },
   logoutLink: {
-    color: 'white',
-    cursor: 'pointer',
-    padding: '10px 20px',
-  },
+    color: "white",
+    cursor: "pointer",
+    padding: "10px 20px"
+  }
 });
 
 const UserMenu: React.FC = () => {
@@ -38,7 +40,7 @@ const UserMenu: React.FC = () => {
     signOut?.();
   }, [localTracks, signOut]);
 
-  if (process.env.REACT_APP_SET_AUTH === 'passcode') {
+  if (process.env.REACT_APP_SET_AUTH === "passcode") {
     return (
       <div className={classes.userContainer}>
         <Link onClick={handleSignOut} className={classes.logoutLink}>
@@ -48,7 +50,7 @@ const UserMenu: React.FC = () => {
     );
   }
 
-  if (process.env.REACT_APP_SET_AUTH === 'firebase') {
+  if (process.env.REACT_APP_SET_AUTH === "firebase") {
     return (
       <div className={classes.userContainer}>
         <UserAvatar user={user} />
@@ -62,12 +64,12 @@ const UserMenu: React.FC = () => {
           anchorEl={anchorRef.current}
           getContentAnchorEl={null}
           anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
+            vertical: "bottom",
+            horizontal: "center"
           }}
           transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
+            vertical: "top",
+            horizontal: "center"
           }}
         >
           <MenuItem onClick={handleSignOut}>

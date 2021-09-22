@@ -1,17 +1,18 @@
-import React from 'react';
-import AudioLevelIndicator from '../../AudioLevelIndicator/AudioLevelIndicator';
-import { LocalAudioTrack } from 'twilio-video';
-import { FormControl, MenuItem, Typography, Select, Grid } from '@material-ui/core';
-import { SELECTED_AUDIO_INPUT_KEY } from '../../../constants';
-import useDevices from '../../../hooks/useDevices/useDevices';
-import useMediaStreamTrack from '../../../hooks/useMediaStreamTrack/useMediaStreamTrack';
-import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import React from "react";
+import { FormControl, Grid, MenuItem, Select, Typography } from "@material-ui/core";
+import { LocalAudioTrack } from "twilio-video";
+
+import { SELECTED_AUDIO_INPUT_KEY } from "../../../constants";
+import useDevices from "../../../hooks/useDevices/useDevices";
+import useMediaStreamTrack from "../../../hooks/useMediaStreamTrack/useMediaStreamTrack";
+import useVideoContext from "../../../hooks/useVideoContext/useVideoContext";
+import AudioLevelIndicator from "../../AudioLevelIndicator/AudioLevelIndicator";
 
 export default function AudioInputList() {
   const { audioInputDevices } = useDevices();
   const { localTracks } = useVideoContext();
 
-  const localAudioTrack = localTracks.find(track => track.kind === 'audio') as LocalAudioTrack;
+  const localAudioTrack = localTracks.find(track => track.kind === "audio") as LocalAudioTrack;
   const mediaStreamTrack = useMediaStreamTrack(localAudioTrack);
   const localAudioInputDeviceId = mediaStreamTrack?.getSettings().deviceId;
 
@@ -31,7 +32,7 @@ export default function AudioInputList() {
             <FormControl fullWidth>
               <Select
                 onChange={e => replaceTrack(e.target.value as string)}
-                value={localAudioInputDeviceId || ''}
+                value={localAudioInputDeviceId || ""}
                 variant="outlined"
               >
                 {audioInputDevices.map(device => (
@@ -42,7 +43,7 @@ export default function AudioInputList() {
               </Select>
             </FormControl>
           ) : (
-            <Typography>{localAudioTrack?.mediaStreamTrack.label || 'No Local Audio'}</Typography>
+            <Typography>{localAudioTrack?.mediaStreamTrack.label || "No Local Audio"}</Typography>
           )}
         </div>
         <AudioLevelIndicator audioTrack={localAudioTrack} color="black" />

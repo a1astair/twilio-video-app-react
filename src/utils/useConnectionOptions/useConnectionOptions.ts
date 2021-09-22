@@ -1,6 +1,7 @@
-import { ConnectOptions } from 'twilio-video';
-import { isMobile, removeUndefineds } from '..';
-import { useAppState } from '../../state';
+import { ConnectOptions } from "twilio-video";
+
+import { useAppState } from "../../state";
+import { isMobile, removeUndefineds } from "..";
 
 export default function useConnectionOptions() {
   const { roomType, settings } = useAppState();
@@ -18,8 +19,8 @@ export default function useConnectionOptions() {
         dominantSpeakerPriority: settings.dominantSpeakerPriority,
         trackSwitchOffMode: settings.trackSwitchOffMode,
         contentPreferencesMode: settings.contentPreferencesMode,
-        clientTrackSwitchOffControl: settings.clientTrackSwitchOffControl,
-      },
+        clientTrackSwitchOffControl: settings.clientTrackSwitchOffControl
+      }
     },
     dominantSpeaker: true,
     networkQuality: { local: 1, remote: 1 },
@@ -31,10 +32,10 @@ export default function useConnectionOptions() {
     // to adapt your encoded video quality for each RemoteParticipant based on
     // their individual bandwidth constraints. Simulcast should be disabled if
     // you are using Peer-to-Peer or 'Go' Rooms.
-    preferredVideoCodecs: [{ codec: 'VP8', simulcast: roomType !== 'peer-to-peer' && roomType !== 'go' }],
+    preferredVideoCodecs: [{ codec: "VP8", simulcast: roomType !== "peer-to-peer" && roomType !== "go" }],
 
-    //@ts-ignore - Internal use only. This property is not exposed in type definitions.
-    environment: process.env.REACT_APP_TWILIO_ENVIRONMENT,
+    // Internal use only. This property is not exposed in type definitions.
+    environment: process.env.REACT_APP_TWILIO_ENVIRONMENT
   };
 
   // For mobile browsers, limit the maximum incoming video bitrate to 2.5 Mbps.
@@ -42,9 +43,9 @@ export default function useConnectionOptions() {
     connectionOptions!.bandwidthProfile!.video!.maxSubscriptionBitrate = 2500000;
   }
 
-  if (process.env.REACT_APP_TWILIO_ENVIRONMENT === 'dev') {
-    //@ts-ignore - Internal use only. This property is not exposed in type definitions.
-    connectionOptions!.wsServer = 'wss://us2.vss.dev.twilio.com/signaling';
+  if (process.env.REACT_APP_TWILIO_ENVIRONMENT === "dev") {
+    // Internal use only. This property is not exposed in type definitions.
+    connectionOptions!.wsServer = "wss://us2.vss.dev.twilio.com/signaling";
   }
 
   // Here we remove any 'undefined' values. The twilio-video SDK will only use defaults

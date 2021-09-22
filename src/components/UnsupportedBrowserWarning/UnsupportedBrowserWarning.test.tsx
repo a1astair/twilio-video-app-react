@@ -1,10 +1,11 @@
-import React from 'react';
-import UnsupportedBrowserWarning from './UnsupportedBrowserWarning';
-import Video from 'twilio-video';
-import { shallow } from 'enzyme';
+import React from "react";
+import { shallow } from "enzyme";
+import Video from "twilio-video";
 
-describe('the UnsupportedBrowserWarning component', () => {
-  it('should render correctly when isSupported is false', () => {
+import UnsupportedBrowserWarning from "./UnsupportedBrowserWarning";
+
+describe("the UnsupportedBrowserWarning component", () => {
+  it("should render correctly when isSupported is false", () => {
     // @ts-ignore
     Video.isSupported = false;
     const wrapper = shallow(
@@ -15,7 +16,7 @@ describe('the UnsupportedBrowserWarning component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('should render children when isSupported is true', () => {
+  it("should render children when isSupported is true", () => {
     // @ts-ignore
     Video.isSupported = true;
     const wrapper = shallow(
@@ -23,6 +24,6 @@ describe('the UnsupportedBrowserWarning component', () => {
         <span>Is supported</span>
       </UnsupportedBrowserWarning>
     );
-    expect(wrapper.text()).toBe('Is supported');
+    expect(wrapper.text()).toBe("Is supported");
   });
 });

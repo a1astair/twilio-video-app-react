@@ -1,2 +1,2 @@
-const mockFile = 'test-file-stub';
+const mockFile = "test-file-stub";
 export default mockFile;

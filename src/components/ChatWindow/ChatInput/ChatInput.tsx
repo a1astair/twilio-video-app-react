@@ -1,62 +1,63 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Button, CircularProgress, Grid, makeStyles } from '@material-ui/core';
-import clsx from 'clsx';
-import { Conversation } from '@twilio/conversations/lib/conversation';
-import FileAttachmentIcon from '../../../icons/FileAttachmentIcon';
-import { isMobile } from '../../../utils';
-import SendMessageIcon from '../../../icons/SendMessageIcon';
-import Snackbar from '../../Snackbar/Snackbar';
-import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import React, { useEffect, useRef, useState } from "react";
+import { Button, CircularProgress, Grid, makeStyles } from "@material-ui/core";
+import TextareaAutosize from "@material-ui/core/TextareaAutosize";
+import { Conversation } from "@twilio/conversations/lib/conversation";
+import clsx from "clsx";
+
+import FileAttachmentIcon from "../../../icons/FileAttachmentIcon";
+import SendMessageIcon from "../../../icons/SendMessageIcon";
+import { isMobile } from "../../../utils";
+import Snackbar from "../../Snackbar/Snackbar";
 
 const useStyles = makeStyles(theme => ({
   chatInputContainer: {
-    borderTop: '1px solid #e4e7e9',
-    borderBottom: '1px solid #e4e7e9',
-    padding: '1em 1.2em 1em',
+    borderTop: "1px solid #e4e7e9",
+    borderBottom: "1px solid #e4e7e9",
+    padding: "1em 1.2em 1em"
   },
   textArea: {
-    width: '100%',
-    border: '0',
-    resize: 'none',
-    fontSize: '14px',
-    fontFamily: 'Inter',
-    outline: 'none',
+    width: "100%",
+    border: "0",
+    resize: "none",
+    fontSize: "14px",
+    fontFamily: "Inter",
+    outline: "none"
   },
   button: {
-    padding: '0.56em',
-    minWidth: 'auto',
-    '&:disabled': {
-      background: 'none',
-      '& path': {
-        fill: '#d8d8d8',
-      },
-    },
+    padding: "0.56em",
+    minWidth: "auto",
+    "&:disabled": {
+      background: "none",
+      "& path": {
+        fill: "#d8d8d8"
+      }
+    }
   },
   buttonContainer: {
-    margin: '1em 0 0 1em',
-    display: 'flex',
+    margin: "1em 0 0 1em",
+    display: "flex"
   },
   fileButtonContainer: {
-    position: 'relative',
-    marginRight: '1em',
+    position: "relative",
+    marginRight: "1em"
   },
   fileButtonLoadingSpinner: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
     marginTop: -12,
-    marginLeft: -12,
+    marginLeft: -12
   },
   textAreaContainer: {
-    display: 'flex',
-    marginTop: '0.4em',
-    padding: '0.48em 0.7em',
-    border: '2px solid transparent',
+    display: "flex",
+    marginTop: "0.4em",
+    padding: "0.48em 0.7em",
+    border: "2px solid transparent"
   },
   isTextareaFocused: {
     borderColor: theme.palette.primary.main,
-    borderRadius: '4px',
-  },
+    borderRadius: "4px"
+  }
 }));
 
 interface ChatInputProps {
@@ -65,11 +66,11 @@ interface ChatInputProps {
 }
 
 const ALLOWED_FILE_TYPES =
-  'audio/*, image/*, text/*, video/*, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document .xslx, .ppt, .pdf, .key, .svg, .csv';
+  "audio/*, image/*, text/*, video/*, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document .xslx, .ppt, .pdf, .key, .svg, .csv";
 
 export default function ChatInput({ conversation, isChatWindowOpen }: ChatInputProps) {
   const classes = useStyles();
-  const [messageBody, setMessageBody] = useState('');
+  const [messageBody, setMessageBody] = useState("");
   const [isSendingFile, setIsSendingFile] = useState(false);
   const [fileSendError, setFileSendError] = useState<string | null>(null);
   const isValidMessage = /\S/.test(messageBody);
@@ -91,7 +92,7 @@ export default function ChatInput({ conversation, isChatWindowOpen }: ChatInputP
 
   // ensures pressing enter + shift creates a new line, so that enter on its own only sends the message:
   const handleReturnKeyPress = (event: React.KeyboardEvent) => {
-    if (!isMobile && event.key === 'Enter' && !event.shiftKey) {
+    if (!isMobile && event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       handleSendMessage(messageBody);
     }
@@ -100,26 +101,25 @@ export default function ChatInput({ conversation, isChatWindowOpen }: ChatInputP
   const handleSendMessage = (message: string) => {
     if (isValidMessage) {
       conversation.sendMessage(message.trim());
-      setMessageBody('');
+      setMessageBody("");
     }
   };
 
   const handleSendFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      var formData = new FormData();
-      formData.append('userfile', file);
+      const formData = new FormData();
+      formData.append("userfile", file);
       setIsSendingFile(true);
       setFileSendError(null);
       conversation
         .sendMessage(formData)
         .catch(e => {
           if (e.code === 413) {
-            setFileSendError('File size is too large. Maximum file size is 150MB.');
+            setFileSendError("File size is too large. Maximum file size is 150MB.");
           } else {
-            setFileSendError('There was a problem uploading the file. Please try again.');
+            setFileSendError("There was a problem uploading the file. Please try again.");
           }
-          console.log('Problem sending file: ', e);
         })
         .finally(() => {
           setIsSendingFile(false);
@@ -132,7 +132,7 @@ export default function ChatInput({ conversation, isChatWindowOpen }: ChatInputP
       <Snackbar
         open={Boolean(fileSendError)}
         headline="Error"
-        message={fileSendError || ''}
+        message={fileSendError || ""}
         variant="error"
         handleClose={() => setFileSendError(null)}
       />
@@ -164,9 +164,9 @@ export default function ChatInput({ conversation, isChatWindowOpen }: ChatInputP
         <input
           ref={fileInputRef}
           type="file"
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           onChange={handleSendFile}
-          value={''}
+          value={""}
           accept={ALLOWED_FILE_TYPES}
         />
         <div className={classes.buttonContainer}>

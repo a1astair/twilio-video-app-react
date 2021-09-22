@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
-import * as firebase from 'firebase/app';
-import 'firebase/auth';
+import { useCallback, useEffect, useState } from "react";
+import * as firebase from "firebase/app";
+
+import "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
   databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID
 };
 
 export default function useFirebaseAuth() {
@@ -19,19 +20,19 @@ export default function useFirebaseAuth() {
       const headers = new window.Headers();
 
       const idToken = await user!.getIdToken();
-      headers.set('Authorization', idToken);
-      headers.set('content-type', 'application/json');
+      headers.set("Authorization", idToken);
+      headers.set("content-type", "application/json");
 
-      const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || '/token';
+      const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || "/token";
 
       return fetch(endpoint, {
-        method: 'POST',
+        method: "POST",
         headers,
         body: JSON.stringify({
           user_identity,
           room_name,
-          create_conversation: process.env.REACT_APP_DISABLE_TWILIO_CONVERSATIONS !== 'true',
-        }),
+          create_conversation: process.env.REACT_APP_DISABLE_TWILIO_CONVERSATIONS !== "true"
+        })
       }).then(res => res.json());
     },
     [user]
@@ -42,19 +43,19 @@ export default function useFirebaseAuth() {
       const headers = new window.Headers();
 
       const idToken = await user!.getIdToken();
-      headers.set('Authorization', idToken);
-      headers.set('content-type', 'application/json');
+      headers.set("Authorization", idToken);
+      headers.set("content-type", "application/json");
 
-      return fetch('/recordingrules', {
-        method: 'POST',
+      return fetch("/recordingrules", {
+        method: "POST",
         headers,
-        body: JSON.stringify({ room_sid, rules }),
+        body: JSON.stringify({ room_sid, rules })
       }).then(async res => {
         const jsonResponse = await res.json();
 
         if (!res.ok) {
           const recordingError = new Error(
-            jsonResponse.error?.message || 'There was an error updating recording rules'
+            jsonResponse.error?.message || "There was an error updating recording rules"
           );
           recordingError.code = jsonResponse.error?.code;
           return Promise.reject(recordingError);
@@ -76,7 +77,7 @@ export default function useFirebaseAuth() {
 
   const signIn = useCallback(() => {
     const provider = new firebase.auth.GoogleAuthProvider();
-    provider.addScope('https://www.googleapis.com/auth/plus.login');
+    provider.addScope("https://www.googleapis.com/auth/plus.login");
 
     return firebase
       .auth()

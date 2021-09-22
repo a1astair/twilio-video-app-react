@@ -1,16 +1,16 @@
-import React, { createContext, useContext, useReducer, useState } from 'react';
-import { RoomType } from '../types';
-import { TwilioError } from 'twilio-video';
-import { settingsReducer, initialSettings, Settings, SettingsAction } from './settings/settingsReducer';
-import useActiveSinkId from './useActiveSinkId/useActiveSinkId';
-import useFirebaseAuth from './useFirebaseAuth/useFirebaseAuth';
-import usePasscodeAuth from './usePasscodeAuth/usePasscodeAuth';
-import { User } from 'firebase';
+import React, { createContext, useContext, useReducer, useState } from "react";
+import { TwilioError } from "twilio-video";
+
+import { RoomType } from "../types";
+
+import { initialSettings, Settings, SettingsAction, settingsReducer } from "./settings/settingsReducer";
+import useActiveSinkId from "./useActiveSinkId/useActiveSinkId";
+import useFirebaseAuth from "./useFirebaseAuth/useFirebaseAuth";
+import usePasscodeAuth from "./usePasscodeAuth/usePasscodeAuth";
 
 export interface StateContextType {
   error: TwilioError | Error | null;
   setError(error: TwilioError | Error | null): void;
-  user?: User | null | { displayName: undefined; photoURL: undefined; passcode?: string };
   signIn?(passcode?: string): Promise<void>;
   signOut?(): Promise<void>;
   isAuthReady?: boolean;
@@ -37,10 +37,13 @@ export const StateContext = createContext<StateContextType>(null!);
 */
 export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
   const [error, setError] = useState<TwilioError | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isFetching, setIsFetching] = useState(false);
   const [activeSinkId, setActiveSinkId] = useActiveSinkId();
   const [settings, dispatchSetting] = useReducer(settingsReducer, initialSettings);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [token, setToken] = useState<string>("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [roomType, setRoomType] = useState<RoomType>();
 
   let contextValue = {
@@ -51,36 +54,32 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
     setActiveSinkId,
     settings,
     dispatchSetting,
-    roomType,
+    roomType
   } as StateContextType;
 
-  if (process.env.REACT_APP_SET_AUTH === 'firebase') {
+  if (process.env.REACT_APP_SET_AUTH === "firebase") {
     contextValue = {
       ...contextValue,
-      ...useFirebaseAuth(), // eslint-disable-line react-hooks/rules-of-hooks
+      ...useFirebaseAuth() // eslint-disable-line react-hooks/rules-of-hooks
     };
-  } else if (process.env.REACT_APP_SET_AUTH === 'passcode') {
+  } else if (process.env.REACT_APP_SET_AUTH === "passcode") {
     contextValue = {
       ...contextValue,
-      ...usePasscodeAuth(), // eslint-disable-line react-hooks/rules-of-hooks
+      ...usePasscodeAuth() // eslint-disable-line react-hooks/rules-of-hooks
     };
   } else {
     contextValue = {
-      ...contextValue,
+      ...contextValue
     };
   }
 
-  return (
-    <StateContext.Provider value={{ ...contextValue }}>
-      {props.children}
-    </StateContext.Provider>
-  );
+  return <StateContext.Provider value={{ ...contextValue }}>{props.children}</StateContext.Provider>;
 }
 
 export function useAppState() {
   const context = useContext(StateContext);
   if (!context) {
-    throw new Error('useAppState must be used within the AppStateProvider');
+    throw new Error("useAppState must be used within the AppStateProvider");
   }
   return context;
 }

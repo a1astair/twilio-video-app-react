@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
-import { RemoteParticipant } from 'twilio-video';
-import useDominantSpeaker from '../useDominantSpeaker/useDominantSpeaker';
-import useVideoContext from '../useVideoContext/useVideoContext';
+import { useEffect, useState } from "react";
+import { RemoteParticipant } from "twilio-video";
+
+import useDominantSpeaker from "../useDominantSpeaker/useDominantSpeaker";
+import useVideoContext from "../useVideoContext/useVideoContext";
 
 export default function useParticipants() {
   const { room } = useVideoContext();
@@ -15,7 +16,7 @@ export default function useParticipants() {
     if (dominantSpeaker) {
       setParticipants(prevParticipants => [
         dominantSpeaker,
-        ...prevParticipants.filter(participant => participant !== dominantSpeaker),
+        ...prevParticipants.filter(participant => participant !== dominantSpeaker)
       ]);
     }
   }, [dominantSpeaker]);
@@ -26,11 +27,11 @@ export default function useParticipants() {
         setParticipants(prevParticipants => [...prevParticipants, participant]);
       const participantDisconnected = (participant: RemoteParticipant) =>
         setParticipants(prevParticipants => prevParticipants.filter(p => p !== participant));
-      room.on('participantConnected', participantConnected);
-      room.on('participantDisconnected', participantDisconnected);
+      room.on("participantConnected", participantConnected);
+      room.on("participantDisconnected", participantDisconnected);
       return () => {
-        room.off('participantConnected', participantConnected);
-        room.off('participantDisconnected', participantDisconnected);
+        room.off("participantConnected", participantConnected);
+        room.off("participantDisconnected", participantDisconnected);
       };
     }
   }, [room]);

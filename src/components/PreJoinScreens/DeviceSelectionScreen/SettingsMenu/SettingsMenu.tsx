@@ -1,27 +1,27 @@
-import React, { useState, useRef } from 'react';
-import Button from '@material-ui/core/Button';
-import MenuContainer from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, Theme, useMediaQuery } from '@material-ui/core';
+import React, { useRef, useState } from "react";
+import { makeStyles, Theme, useMediaQuery } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import MenuContainer from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import Typography from "@material-ui/core/Typography";
+import MoreIcon from "@material-ui/icons/MoreVert";
 
-import AboutDialog from '../../../AboutDialog/AboutDialog';
-import ConnectionOptionsDialog from '../../../ConnectionOptionsDialog/ConnectionOptionsDialog';
-import DeviceSelectionDialog from '../../../DeviceSelectionDialog/DeviceSelectionDialog';
-import SettingsIcon from '../../../../icons/SettingsIcon';
-import { useAppState } from '../../../../state';
+import SettingsIcon from "../../../../icons/SettingsIcon";
+import { useAppState } from "../../../../state";
+import AboutDialog from "../../../AboutDialog/AboutDialog";
+import ConnectionOptionsDialog from "../../../ConnectionOptionsDialog/ConnectionOptionsDialog";
+import DeviceSelectionDialog from "../../../DeviceSelectionDialog/DeviceSelectionDialog";
 
 const useStyles = makeStyles({
   settingsButton: {
-    margin: '1.8em 0 0',
-  },
+    margin: "1.8em 0 0"
+  }
 });
 
 export default function SettingsMenu({ mobileButtonClass }: { mobileButtonClass?: string }) {
   const classes = useStyles();
   const { roomType } = useAppState();
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
   const [menuOpen, setMenuOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [deviceSettingsOpen, setDeviceSettingsOpen] = useState(false);
@@ -56,12 +56,12 @@ export default function SettingsMenu({ mobileButtonClass }: { mobileButtonClass?
         anchorEl={anchorRef.current}
         getContentAnchorEl={null}
         anchorOrigin={{
-          vertical: 'top',
-          horizontal: isMobile ? 'left' : 'right',
+          vertical: "top",
+          horizontal: isMobile ? "left" : "right"
         }}
         transformOrigin={{
           vertical: 0,
-          horizontal: 'center',
+          horizontal: "center"
         }}
       >
         <MenuItem onClick={() => setAboutOpen(true)}>
@@ -70,7 +70,7 @@ export default function SettingsMenu({ mobileButtonClass }: { mobileButtonClass?
         <MenuItem onClick={() => setDeviceSettingsOpen(true)}>
           <Typography variant="body1">Audio and Video Settings</Typography>
         </MenuItem>
-        {roomType !== 'peer-to-peer' && roomType !== 'go' && (
+        {roomType !== "peer-to-peer" && roomType !== "go" && (
           <MenuItem onClick={() => setConnectionSettingsOpen(true)}>
             <Typography variant="body1">Connection Settings</Typography>
           </MenuItem>

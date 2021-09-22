@@ -1,24 +1,24 @@
-import React from 'react';
-import clsx from 'clsx';
-import { Link } from '@material-ui/core';
-import linkify from 'linkify-it';
-import { makeStyles } from '@material-ui/core/styles';
+import React from "react";
+import { Link } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
+import linkify from "linkify-it";
 
 const useStyles = makeStyles({
   messageContainer: {
-    borderRadius: '16px',
-    display: 'inline-flex',
-    alignItems: 'center',
-    padding: '0.5em 0.8em 0.6em',
-    margin: '0.3em 0 0',
-    wordBreak: 'break-word',
-    backgroundColor: '#E1E3EA',
-    hyphens: 'auto',
-    whiteSpace: 'pre-wrap',
+    borderRadius: "16px",
+    display: "inline-flex",
+    alignItems: "center",
+    padding: "0.5em 0.8em 0.6em",
+    margin: "0.3em 0 0",
+    wordBreak: "break-word",
+    backgroundColor: "#E1E3EA",
+    hyphens: "auto",
+    whiteSpace: "pre-wrap"
   },
   isLocalParticipant: {
-    backgroundColor: '#CCE4FF',
-  },
+    backgroundColor: "#CCE4FF"
+  }
 });
 
 interface TextMessageProps {
@@ -55,7 +55,7 @@ export default function TextMessage({ body, isLocalParticipant }: TextMessagePro
     <div>
       <div
         className={clsx(classes.messageContainer, {
-          [classes.isLocalParticipant]: isLocalParticipant,
+          [classes.isLocalParticipant]: isLocalParticipant
         })}
       >
         <div>{addLinks(body)}</div>

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { LocalTrackPublication, Participant, RemoteTrackPublication } from 'twilio-video';
+import { useEffect, useState } from "react";
+import { LocalTrackPublication, Participant, RemoteTrackPublication } from "twilio-video";
 
 type TrackPublication = LocalTrackPublication | RemoteTrackPublication;
 
@@ -15,11 +15,11 @@ export default function usePublications(participant: Participant) {
     const publicationRemoved = (publication: TrackPublication) =>
       setPublications(prevPublications => prevPublications.filter(p => p !== publication));
 
-    participant.on('trackPublished', publicationAdded);
-    participant.on('trackUnpublished', publicationRemoved);
+    participant.on("trackPublished", publicationAdded);
+    participant.on("trackUnpublished", publicationRemoved);
     return () => {
-      participant.off('trackPublished', publicationAdded);
-      participant.off('trackUnpublished', publicationRemoved);
+      participant.off("trackPublished", publicationAdded);
+      participant.off("trackUnpublished", publicationRemoved);
     };
   }, [participant]);
 

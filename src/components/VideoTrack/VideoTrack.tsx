@@ -1,13 +1,14 @@
-import React, { useRef, useEffect } from 'react';
-import { IVideoTrack } from '../../types';
-import { styled } from '@material-ui/core/styles';
-import { Track } from 'twilio-video';
-import useMediaStreamTrack from '../../hooks/useMediaStreamTrack/useMediaStreamTrack';
-import useVideoTrackDimensions from '../../hooks/useVideoTrackDimensions/useVideoTrackDimensions';
+import React, { useEffect, useRef } from "react";
+import { styled } from "@material-ui/core/styles";
+import { Track } from "twilio-video";
 
-const Video = styled('video')({
-  width: '100%',
-  height: '100%',
+import useMediaStreamTrack from "../../hooks/useMediaStreamTrack/useMediaStreamTrack";
+import useVideoTrackDimensions from "../../hooks/useVideoTrackDimensions/useVideoTrackDimensions";
+import { IVideoTrack } from "../../types";
+
+const Video = styled("video")({
+  width: "100%",
+  height: "100%"
 });
 
 interface VideoTrackProps {
@@ -44,10 +45,10 @@ export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps
   }, [track, priority]);
 
   // The local video track is mirrored if it is not facing the environment.
-  const isFrontFacing = mediaStreamTrack?.getSettings().facingMode !== 'environment';
+  const isFrontFacing = mediaStreamTrack?.getSettings().facingMode !== "environment";
   const style = {
-    transform: isLocal && isFrontFacing ? 'rotateY(180deg)' : '',
-    objectFit: isPortrait || track.name.includes('screen') ? ('contain' as const) : ('cover' as const),
+    transform: isLocal && isFrontFacing ? "rotateY(180deg)" : "",
+    objectFit: isPortrait || track.name.includes("screen") ? ("contain" as const) : ("cover" as const)
   };
 
   return <Video ref={ref} style={style} />;

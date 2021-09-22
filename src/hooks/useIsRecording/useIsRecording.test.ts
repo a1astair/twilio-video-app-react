@@ -1,14 +1,16 @@
-import { act, renderHook } from '@testing-library/react-hooks';
-import EventEmitter from 'events';
-import { Room } from 'twilio-video';
-import useIsRecording from './useIsRecording';
-import useVideoContext from '../useVideoContext/useVideoContext';
+import { act, renderHook } from "@testing-library/react-hooks";
+import EventEmitter from "events";
+import { Room } from "twilio-video";
 
-jest.mock('../useVideoContext/useVideoContext');
+import useVideoContext from "../useVideoContext/useVideoContext";
+
+import useIsRecording from "./useIsRecording";
+
+jest.mock("../useVideoContext/useVideoContext");
 
 const mockUseVideoContext = useVideoContext as jest.Mock<any>;
 
-describe('the useIsRecording hook', () => {
+describe("the useIsRecording hook", () => {
   let mockRoom: any;
 
   beforeEach(() => {
@@ -31,7 +33,7 @@ describe('the useIsRecording hook', () => {
   it('should respond to "recordingStopped" events', () => {
     const { result } = renderHook(() => useIsRecording());
     act(() => {
-      mockRoom.emit('recordingStopped');
+      mockRoom.emit("recordingStopped");
     });
     expect(result.current).toBe(false);
   });
@@ -40,15 +42,15 @@ describe('the useIsRecording hook', () => {
     mockRoom.isRecording = false;
     const { result } = renderHook(() => useIsRecording());
     act(() => {
-      mockRoom.emit('recordingStarted');
+      mockRoom.emit("recordingStarted");
     });
     expect(result.current).toBe(true);
   });
 
-  it('should clean up listeners on unmount', () => {
+  it("should clean up listeners on unmount", () => {
     const { unmount } = renderHook(() => useIsRecording());
     unmount();
-    expect(mockRoom.listenerCount('recordingStarted')).toBe(0);
-    expect(mockRoom.listenerCount('recordingStopped')).toBe(0);
+    expect(mockRoom.listenerCount("recordingStarted")).toBe(0);
+    expect(mockRoom.listenerCount("recordingStopped")).toBe(0);
   });
 });

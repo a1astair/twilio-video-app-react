@@ -1,22 +1,23 @@
-import React, { useState } from 'react';
-import { DEFAULT_VIDEO_CONSTRAINTS, SELECTED_VIDEO_INPUT_KEY } from '../../../constants';
-import { FormControl, MenuItem, Typography, Select } from '@material-ui/core';
-import { LocalVideoTrack } from 'twilio-video';
-import { makeStyles } from '@material-ui/core/styles';
-import VideoTrack from '../../VideoTrack/VideoTrack';
-import useDevices from '../../../hooks/useDevices/useDevices';
-import useMediaStreamTrack from '../../../hooks/useMediaStreamTrack/useMediaStreamTrack';
-import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import React, { useState } from "react";
+import { FormControl, MenuItem, Select, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { LocalVideoTrack } from "twilio-video";
+
+import { DEFAULT_VIDEO_CONSTRAINTS, SELECTED_VIDEO_INPUT_KEY } from "../../../constants";
+import useDevices from "../../../hooks/useDevices/useDevices";
+import useMediaStreamTrack from "../../../hooks/useMediaStreamTrack/useMediaStreamTrack";
+import useVideoContext from "../../../hooks/useVideoContext/useVideoContext";
+import VideoTrack from "../../VideoTrack/VideoTrack";
 
 const useStyles = makeStyles({
   preview: {
-    width: '300px',
-    maxHeight: '200px',
-    margin: '0.5em auto',
-    '& video': {
-      maxHeight: '200px',
-    },
-  },
+    width: "300px",
+    maxHeight: "200px",
+    margin: "0.5em auto",
+    "& video": {
+      maxHeight: "200px"
+    }
+  }
 });
 
 export default function VideoInputList() {
@@ -24,7 +25,7 @@ export default function VideoInputList() {
   const { videoInputDevices } = useDevices();
   const { localTracks } = useVideoContext();
 
-  const localVideoTrack = localTracks.find(track => track.kind === 'video') as LocalVideoTrack | undefined;
+  const localVideoTrack = localTracks.find(track => track.kind === "video") as LocalVideoTrack | undefined;
   const mediaStreamTrack = useMediaStreamTrack(localVideoTrack);
   const [storedLocalVideoDeviceId, setStoredLocalVideoDeviceId] = useState(
     window.localStorage.getItem(SELECTED_VIDEO_INPUT_KEY)
@@ -38,7 +39,7 @@ export default function VideoInputList() {
     window.localStorage.setItem(SELECTED_VIDEO_INPUT_KEY, newDeviceId);
     localVideoTrack?.restart({
       ...(DEFAULT_VIDEO_CONSTRAINTS as {}),
-      deviceId: { exact: newDeviceId },
+      deviceId: { exact: newDeviceId }
     });
   }
 
@@ -56,7 +57,7 @@ export default function VideoInputList() {
           </Typography>
           <Select
             onChange={e => replaceTrack(e.target.value as string)}
-            value={localVideoInputDeviceId || ''}
+            value={localVideoInputDeviceId || ""}
             variant="outlined"
           >
             {videoInputDevices.map(device => (
@@ -71,7 +72,7 @@ export default function VideoInputList() {
           <Typography variant="subtitle2" gutterBottom>
             Video Input
           </Typography>
-          <Typography>{localVideoTrack?.mediaStreamTrack.label || 'No Local Video'}</Typography>
+          <Typography>{localVideoTrack?.mediaStreamTrack.label || "No Local Video"}</Typography>
         </>
       )}
     </div>

@@ -1,44 +1,44 @@
 /* istanbul ignore file */
-import React from 'react';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import Button from '@material-ui/core/Button';
-import clsx from 'clsx';
-import { Message } from '@twilio/conversations/lib/message';
-import throttle from 'lodash.throttle';
-import { withStyles, WithStyles, createStyles } from '@material-ui/core/styles';
+import React from "react";
+import Button from "@material-ui/core/Button";
+import { createStyles, WithStyles, withStyles } from "@material-ui/core/styles";
+import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import { Message } from "@twilio/conversations/lib/message";
+import clsx from "clsx";
+import throttle from "lodash.throttle";
 
 const styles = createStyles({
   outerContainer: {
     minHeight: 0,
     flex: 1,
-    position: 'relative',
+    position: "relative"
   },
   innerScrollContainer: {
-    height: '100%',
-    overflowY: 'auto',
-    padding: '0 1.2em 0',
+    height: "100%",
+    overflowY: "auto",
+    padding: "0 1.2em 0"
   },
   messageListContainer: {
-    overflowY: 'auto',
-    flex: '1',
-    paddingBottom: '1em',
+    overflowY: "auto",
+    flex: "1",
+    paddingBottom: "1em"
   },
   button: {
-    position: 'absolute',
-    bottom: '14px',
-    right: '2em',
+    position: "absolute",
+    bottom: "14px",
+    right: "2em",
     zIndex: 100,
-    padding: '0.5em 0.9em',
-    visibility: 'hidden',
+    padding: "0.5em 0.9em",
+    visibility: "hidden",
     opacity: 0,
-    boxShadow: '0px 4px 16px rgba(18, 28, 45, 0.2)',
-    transition: 'all 0.5s ease',
+    boxShadow: "0px 4px 16px rgba(18, 28, 45, 0.2)",
+    transition: "all 0.5s ease"
   },
   showButton: {
-    visibility: 'visible',
+    visibility: "visible",
     opacity: 1,
-    bottom: '24px',
-  },
+    bottom: "24px"
+  }
 });
 
 interface MessageListScrollContainerProps extends WithStyles<typeof styles> {
@@ -76,7 +76,7 @@ export class MessageListScrollContainer extends React.Component<
 
   componentDidMount() {
     this.scrollToBottom();
-    this.chatThreadRef.current!.addEventListener('scroll', this.handleScroll);
+    this.chatThreadRef.current!.addEventListener("scroll", this.handleScroll);
   }
 
   // This component updates as users send new messages:
@@ -96,7 +96,7 @@ export class MessageListScrollContainer extends React.Component<
         // Otherwise, messageNotificationCount is set to 1:
         messageNotificationCount: previousState.showButton
           ? previousState.messageNotificationCount + numberOfNewMessages
-          : 1,
+          : 1
       }));
     }
   }
@@ -117,14 +117,14 @@ export class MessageListScrollContainer extends React.Component<
 
     this.setState(prevState => ({
       isScrolledToBottom,
-      showButton: isScrolledToBottom ? false : prevState.showButton,
+      showButton: isScrolledToBottom ? false : prevState.showButton
     }));
   }, 300);
 
   handleClick = () => {
     const innerScrollContainerEl = this.chatThreadRef.current!;
 
-    innerScrollContainerEl.scrollTo({ top: innerScrollContainerEl.scrollHeight, behavior: 'smooth' });
+    innerScrollContainerEl.scrollTo({ top: innerScrollContainerEl.scrollHeight, behavior: "smooth" });
 
     this.setState({ showButton: false });
   };
@@ -132,7 +132,7 @@ export class MessageListScrollContainer extends React.Component<
   componentWillUnmount() {
     const innerScrollContainerEl = this.chatThreadRef.current!;
 
-    innerScrollContainerEl.removeEventListener('scroll', this.handleScroll);
+    innerScrollContainerEl.removeEventListener("scroll", this.handleScroll);
   }
 
   render() {
@@ -152,7 +152,7 @@ export class MessageListScrollContainer extends React.Component<
               data-cy-new-message-button
             >
               {this.state.messageNotificationCount} new message
-              {this.state.messageNotificationCount > 1 && 's'}
+              {this.state.messageNotificationCount > 1 && "s"}
             </Button>
           </div>
         </div>

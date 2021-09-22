@@ -1,50 +1,51 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import useLocalAudioToggle from '../../../hooks/useLocalAudioToggle/useLocalAudioToggle';
+import React from "react";
+import { shallow } from "enzyme";
 
-import MicIcon from '../../../icons/MicIcon';
-import MicOffIcon from '../../../icons/MicOffIcon';
-import ToggleAudioButton from './ToggleAudioButton';
-import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import useLocalAudioToggle from "../../../hooks/useLocalAudioToggle/useLocalAudioToggle";
+import useVideoContext from "../../../hooks/useVideoContext/useVideoContext";
+import MicIcon from "../../../icons/MicIcon";
+import MicOffIcon from "../../../icons/MicOffIcon";
 
-jest.mock('../../../hooks/useLocalAudioToggle/useLocalAudioToggle');
-jest.mock('../../../hooks/useVideoContext/useVideoContext');
+import ToggleAudioButton from "./ToggleAudioButton";
+
+jest.mock("../../../hooks/useLocalAudioToggle/useLocalAudioToggle");
+jest.mock("../../../hooks/useVideoContext/useVideoContext");
 const mockUseLocalAudioToggle = useLocalAudioToggle as jest.Mock<any>;
 const mockUseVideoContext = useVideoContext as jest.Mock<any>;
 
-describe('the ToggleAudioButton component', () => {
+describe("the ToggleAudioButton component", () => {
   beforeAll(() => {
-    mockUseVideoContext.mockImplementation(() => ({ localTracks: [{ kind: 'audio' }] }));
+    mockUseVideoContext.mockImplementation(() => ({ localTracks: [{ kind: "audio" }] }));
   });
 
-  it('should render correctly when audio is enabled', () => {
+  it("should render correctly when audio is enabled", () => {
     mockUseLocalAudioToggle.mockImplementation(() => [true, () => {}]);
     const wrapper = shallow(<ToggleAudioButton />);
-    expect(wrapper.prop('startIcon')).toEqual(<MicIcon />);
-    expect(wrapper.text()).toBe('Mute');
+    expect(wrapper.prop("startIcon")).toEqual(<MicIcon />);
+    expect(wrapper.text()).toBe("Mute");
   });
 
-  it('should render correctly when audio is disabled', () => {
+  it("should render correctly when audio is disabled", () => {
     mockUseLocalAudioToggle.mockImplementation(() => [false, () => {}]);
     const wrapper = shallow(<ToggleAudioButton />);
-    expect(wrapper.prop('startIcon')).toEqual(<MicOffIcon />);
-    expect(wrapper.text()).toBe('Unmute');
+    expect(wrapper.prop("startIcon")).toEqual(<MicOffIcon />);
+    expect(wrapper.text()).toBe("Unmute");
   });
 
-  it('should render correctly when there are no audio tracks', () => {
+  it("should render correctly when there are no audio tracks", () => {
     mockUseLocalAudioToggle.mockImplementation(() => [true, () => {}]);
-    mockUseVideoContext.mockImplementationOnce(() => ({ localTracks: [{ kind: 'video' }] }));
+    mockUseVideoContext.mockImplementationOnce(() => ({ localTracks: [{ kind: "video" }] }));
     const wrapper = shallow(<ToggleAudioButton />);
-    expect(wrapper.prop('startIcon')).toEqual(<MicIcon />);
-    expect(wrapper.text()).toBe('No Audio');
-    expect(wrapper.prop('disabled')).toEqual(true);
+    expect(wrapper.prop("startIcon")).toEqual(<MicIcon />);
+    expect(wrapper.text()).toBe("No Audio");
+    expect(wrapper.prop("disabled")).toEqual(true);
   });
 
-  it('should call the correct toggle function when clicked', () => {
+  it("should call the correct toggle function when clicked", () => {
     const mockFn = jest.fn();
     mockUseLocalAudioToggle.mockImplementation(() => [false, mockFn]);
     const wrapper = shallow(<ToggleAudioButton />);
-    wrapper.simulate('click');
+    wrapper.simulate("click");
     expect(mockFn).toHaveBeenCalled();
   });
 });

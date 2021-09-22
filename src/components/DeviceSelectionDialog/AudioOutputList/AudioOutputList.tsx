@@ -1,7 +1,8 @@
-import React from 'react';
-import { FormControl, MenuItem, Typography, Select } from '@material-ui/core';
-import { useAppState } from '../../../state';
-import useDevices from '../../../hooks/useDevices/useDevices';
+import React from "react";
+import { FormControl, MenuItem, Select, Typography } from "@material-ui/core";
+
+import useDevices from "../../../hooks/useDevices/useDevices";
+import { useAppState } from "../../../state";
 
 export default function AudioOutputList() {
   const { audioOutputDevices } = useDevices();
@@ -26,7 +27,7 @@ export default function AudioOutputList() {
       ) : (
         <>
           <Typography variant="subtitle2">Audio Output</Typography>
-          <Typography>{activeOutputLabel || 'System Default Audio Output'}</Typography>
+          <Typography>{activeOutputLabel || "System Default Audio Output"}</Typography>
         </>
       )}
     </div>

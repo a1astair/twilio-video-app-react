@@ -1,6 +1,6 @@
-import { LocalVideoTrack, RemoteVideoTrack, TwilioError } from 'twilio-video';
+import { LocalVideoTrack, RemoteVideoTrack, TwilioError } from "twilio-video";
 
-declare module 'twilio-video' {
+declare module "twilio-video" {
   // These help to create union types between Local and Remote VideoTracks
   interface LocalVideoTrack {
     isSwitchedOff: undefined;
@@ -35,12 +35,12 @@ export type ErrorCallback = (error: TwilioError | Error) => void;
 
 export type IVideoTrack = LocalVideoTrack | RemoteVideoTrack;
 
-export type RoomType = 'group' | 'group-small' | 'peer-to-peer' | 'go';
+export type RoomType = "group" | "group-small" | "peer-to-peer" | "go";
 
 export type RecordingRule = {
-  type: 'include' | 'exclude';
+  type: "include" | "exclude";
   all?: boolean;
-  kind?: 'audio' | 'video';
+  kind?: "audio" | "video";
   publisher?: string;
 };
 

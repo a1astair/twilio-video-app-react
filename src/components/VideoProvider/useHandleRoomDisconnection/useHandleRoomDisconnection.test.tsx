@@ -1,14 +1,15 @@
-import { act, renderHook } from '@testing-library/react-hooks';
-import { Room } from 'twilio-video';
-import EventEmitter from 'events';
-import useHandleRoomDisconnection from './useHandleRoomDisconnection';
+import { act, renderHook } from "@testing-library/react-hooks";
+import EventEmitter from "events";
+import { Room } from "twilio-video";
+
+import useHandleRoomDisconnection from "./useHandleRoomDisconnection";
 
 const mockOnError = jest.fn();
 const mockRemoveLocalAudioTrack = jest.fn();
 const mockRemoveLocalVideoTrack = jest.fn();
 const mockToggleScreenSharing = jest.fn();
 
-describe('the useHandleRoomDisconnection hook', () => {
+describe("the useHandleRoomDisconnection hook", () => {
   let mockRoom: any = new EventEmitter();
 
   beforeEach(jest.clearAllMocks);
@@ -25,7 +26,7 @@ describe('the useHandleRoomDisconnection hook', () => {
       )
     );
     act(() => {
-      mockRoom.emit('disconnected', mockRoom);
+      mockRoom.emit("disconnected", mockRoom);
     });
     expect(mockOnError).not.toHaveBeenCalled();
   });
@@ -42,9 +43,9 @@ describe('the useHandleRoomDisconnection hook', () => {
       )
     );
     act(() => {
-      mockRoom.emit('disconnected', mockRoom, 'mockError');
+      mockRoom.emit("disconnected", mockRoom, "mockError");
     });
-    expect(mockOnError).toHaveBeenCalledWith('mockError');
+    expect(mockOnError).toHaveBeenCalledWith("mockError");
   });
 
   it('should remove local tracks when the "disconnected" event is emitted', () => {
@@ -59,7 +60,7 @@ describe('the useHandleRoomDisconnection hook', () => {
       )
     );
     act(() => {
-      mockRoom.emit('disconnected', mockRoom, 'mockError');
+      mockRoom.emit("disconnected", mockRoom, "mockError");
     });
     expect(mockRemoveLocalAudioTrack).toHaveBeenCalled();
     expect(mockRemoveLocalVideoTrack).toHaveBeenCalled();
@@ -77,7 +78,7 @@ describe('the useHandleRoomDisconnection hook', () => {
       )
     );
     act(() => {
-      mockRoom.emit('disconnected', mockRoom, 'mockError');
+      mockRoom.emit("disconnected", mockRoom, "mockError");
     });
     expect(mockToggleScreenSharing).not.toHaveBeenCalled();
   });
@@ -94,12 +95,12 @@ describe('the useHandleRoomDisconnection hook', () => {
       )
     );
     act(() => {
-      mockRoom.emit('disconnected', mockRoom, 'mockError');
+      mockRoom.emit("disconnected", mockRoom, "mockError");
     });
     expect(mockToggleScreenSharing).toHaveBeenCalled();
   });
 
-  it('should tear down old listeners when receiving a new room', () => {
+  it("should tear down old listeners when receiving a new room", () => {
     const originalMockRoom = mockRoom;
     const { rerender } = renderHook(() =>
       useHandleRoomDisconnection(
@@ -111,7 +112,7 @@ describe('the useHandleRoomDisconnection hook', () => {
         mockToggleScreenSharing
       )
     );
-    expect(originalMockRoom.listenerCount('disconnected')).toBe(1);
+    expect(originalMockRoom.listenerCount("disconnected")).toBe(1);
 
     act(() => {
       mockRoom = new EventEmitter() as Room;
@@ -119,11 +120,11 @@ describe('the useHandleRoomDisconnection hook', () => {
 
     rerender();
 
-    expect(originalMockRoom.listenerCount('disconnected')).toBe(0);
-    expect(mockRoom.listenerCount('disconnected')).toBe(1);
+    expect(originalMockRoom.listenerCount("disconnected")).toBe(0);
+    expect(mockRoom.listenerCount("disconnected")).toBe(1);
   });
 
-  it('should clean up listeners on unmount', () => {
+  it("should clean up listeners on unmount", () => {
     const { unmount } = renderHook(() =>
       useHandleRoomDisconnection(
         mockRoom,
@@ -135,6 +136,6 @@ describe('the useHandleRoomDisconnection hook', () => {
       )
     );
     unmount();
-    expect(mockRoom.listenerCount('disconnected')).toBe(0);
+    expect(mockRoom.listenerCount("disconnected")).toBe(0);
   });
 });

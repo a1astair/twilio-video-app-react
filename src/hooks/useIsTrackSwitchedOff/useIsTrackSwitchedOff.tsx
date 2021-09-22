@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { LocalVideoTrack, RemoteVideoTrack } from 'twilio-video';
+import { useEffect, useState } from "react";
+import { LocalVideoTrack, RemoteVideoTrack } from "twilio-video";
 
 type TrackType = RemoteVideoTrack | LocalVideoTrack | undefined | null;
 
@@ -16,11 +16,11 @@ export default function useIsTrackSwitchedOff(track: TrackType) {
     if (track) {
       const handleSwitchedOff = () => setIsSwitchedOff(true);
       const handleSwitchedOn = () => setIsSwitchedOff(false);
-      track.on('switchedOff', handleSwitchedOff);
-      track.on('switchedOn', handleSwitchedOn);
+      track.on("switchedOff", handleSwitchedOff);
+      track.on("switchedOn", handleSwitchedOn);
       return () => {
-        track.off('switchedOff', handleSwitchedOff);
-        track.off('switchedOn', handleSwitchedOn);
+        track.off("switchedOff", handleSwitchedOff);
+        track.off("switchedOn", handleSwitchedOn);
       };
     }
   }, [track]);

@@ -1,7 +1,8 @@
-import { DEFAULT_VIDEO_CONSTRAINTS, SELECTED_AUDIO_INPUT_KEY, SELECTED_VIDEO_INPUT_KEY } from '../../../constants';
-import { getDeviceInfo, isPermissionDenied } from '../../../utils';
-import { useCallback, useState } from 'react';
-import Video, { LocalVideoTrack, LocalAudioTrack, CreateLocalTrackOptions } from 'twilio-video';
+import { useCallback, useState } from "react";
+import Video, { CreateLocalTrackOptions, LocalAudioTrack, LocalVideoTrack } from "twilio-video";
+
+import { DEFAULT_VIDEO_CONSTRAINTS, SELECTED_AUDIO_INPUT_KEY, SELECTED_VIDEO_INPUT_KEY } from "../../../constants";
+import { getDeviceInfo, isPermissionDenied } from "../../../utils";
 
 export default function useLocalTracks() {
   const [audioTrack, setAudioTrack] = useState<LocalAudioTrack>();
@@ -33,7 +34,7 @@ export default function useLocalTracks() {
     const options: CreateLocalTrackOptions = {
       ...(DEFAULT_VIDEO_CONSTRAINTS as {}),
       name: `camera-${Date.now()}`,
-      ...(hasSelectedVideoDevice && { deviceId: { exact: selectedVideoDeviceId! } }),
+      ...(hasSelectedVideoDevice && { deviceId: { exact: selectedVideoDeviceId! } })
     };
 
     return Video.createLocalVideoTrack(options).then(newTrack => {
@@ -76,8 +77,8 @@ export default function useLocalTracks() {
 
     // In Chrome, it is possible to deny permissions to only audio or only video.
     // If that has happened, then we don't want to attempt to acquire the device.
-    const isCameraPermissionDenied = await isPermissionDenied('camera');
-    const isMicrophonePermissionDenied = await isPermissionDenied('microphone');
+    const isCameraPermissionDenied = await isPermissionDenied("camera");
+    const isMicrophonePermissionDenied = await isPermissionDenied("microphone");
 
     const shouldAcquireVideo = hasVideoInputDevices && !isCameraPermissionDenied;
     const shouldAcquireAudio = hasAudioInputDevices && !isMicrophonePermissionDenied;
@@ -86,24 +87,24 @@ export default function useLocalTracks() {
       video: shouldAcquireVideo && {
         ...(DEFAULT_VIDEO_CONSTRAINTS as {}),
         name: `camera-${Date.now()}`,
-        ...(hasSelectedVideoDevice && { deviceId: { exact: selectedVideoDeviceId! } }),
+        ...(hasSelectedVideoDevice && { deviceId: { exact: selectedVideoDeviceId! } })
       },
       audio:
         shouldAcquireAudio &&
-        (hasSelectedAudioDevice ? { deviceId: { exact: selectedAudioDeviceId! } } : hasAudioInputDevices),
+        (hasSelectedAudioDevice ? { deviceId: { exact: selectedAudioDeviceId! } } : hasAudioInputDevices)
     };
 
     return Video.createLocalTracks(localTrackConstraints)
       .then(tracks => {
-        const newVideoTrack = tracks.find(track => track.kind === 'video') as LocalVideoTrack;
-        const newAudioTrack = tracks.find(track => track.kind === 'audio') as LocalAudioTrack;
+        const newVideoTrack = tracks.find(track => track.kind === "video") as LocalVideoTrack;
+        const newAudioTrack = tracks.find(track => track.kind === "audio") as LocalAudioTrack;
         if (newVideoTrack) {
           setVideoTrack(newVideoTrack);
           // Save the deviceId so it can be picked up by the VideoInputList component. This only matters
           // in cases where the user's video is disabled.
           window.localStorage.setItem(
             SELECTED_VIDEO_INPUT_KEY,
-            newVideoTrack.mediaStreamTrack.getSettings().deviceId ?? ''
+            newVideoTrack.mediaStreamTrack.getSettings().deviceId ?? ""
           );
         }
         if (newAudioTrack) {
@@ -113,16 +114,16 @@ export default function useLocalTracks() {
         // These custom errors will be picked up by the MediaErrorSnackbar component.
         if (isCameraPermissionDenied && isMicrophonePermissionDenied) {
           const error = new Error();
-          error.name = 'NotAllowedError';
+          error.name = "NotAllowedError";
           throw error;
         }
 
         if (isCameraPermissionDenied) {
-          throw new Error('CameraPermissionsDenied');
+          throw new Error("CameraPermissionsDenied");
         }
 
         if (isMicrophonePermissionDenied) {
-          throw new Error('MicrophonePermissionsDenied');
+          throw new Error("MicrophonePermissionsDenied");
         }
       })
       .finally(() => setIsAcquiringLocalTracks(false));
@@ -140,6 +141,6 @@ export default function useLocalTracks() {
     isAcquiringLocalTracks,
     removeLocalAudioTrack,
     removeLocalVideoTrack,
-    getAudioAndVideoTracks,
+    getAudioAndVideoTracks
   };
 }

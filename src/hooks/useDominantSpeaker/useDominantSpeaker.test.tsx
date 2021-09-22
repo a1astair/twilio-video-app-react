@@ -1,52 +1,54 @@
-import { act, renderHook } from '@testing-library/react-hooks';
-import EventEmitter from 'events';
-import useDominantSpeaker from './useDominantSpeaker';
-import useVideoContext from '../useVideoContext/useVideoContext';
+import { act, renderHook } from "@testing-library/react-hooks";
+import EventEmitter from "events";
 
-jest.mock('../useVideoContext/useVideoContext');
+import useVideoContext from "../useVideoContext/useVideoContext";
+
+import useDominantSpeaker from "./useDominantSpeaker";
+
+jest.mock("../useVideoContext/useVideoContext");
 const mockUseVideoContext = useVideoContext as jest.Mock<any>;
 
-describe('the useDominantSpeaker hook', () => {
+describe("the useDominantSpeaker hook", () => {
   const mockRoom: any = new EventEmitter();
-  mockRoom.dominantSpeaker = 'mockDominantSpeaker';
+  mockRoom.dominantSpeaker = "mockDominantSpeaker";
   mockUseVideoContext.mockImplementation(() => ({ room: mockRoom }));
 
-  it('should return room.dominantSpeaker by default', () => {
+  it("should return room.dominantSpeaker by default", () => {
     const { result } = renderHook(useDominantSpeaker);
-    expect(result.current).toBe('mockDominantSpeaker');
+    expect(result.current).toBe("mockDominantSpeaker");
   });
 
   it('should respond to "dominantSpeakerChanged" events', async () => {
     const { result } = renderHook(useDominantSpeaker);
     act(() => {
-      mockRoom.emit('dominantSpeakerChanged', 'newDominantSpeaker');
+      mockRoom.emit("dominantSpeakerChanged", "newDominantSpeaker");
     });
-    expect(result.current).toBe('newDominantSpeaker');
+    expect(result.current).toBe("newDominantSpeaker");
   });
 
   it('should not set "null" when there is no dominant speaker', () => {
     const { result } = renderHook(useDominantSpeaker);
-    expect(result.current).toBe('mockDominantSpeaker');
+    expect(result.current).toBe("mockDominantSpeaker");
     act(() => {
-      mockRoom.emit('dominantSpeakerChanged', null);
+      mockRoom.emit("dominantSpeakerChanged", null);
     });
-    expect(result.current).toBe('mockDominantSpeaker');
+    expect(result.current).toBe("mockDominantSpeaker");
   });
 
   it('should set "null" as the dominant speaker when the dominant speaker disconnects', () => {
     const { result } = renderHook(useDominantSpeaker);
-    expect(result.current).toBe('mockDominantSpeaker');
+    expect(result.current).toBe("mockDominantSpeaker");
     act(() => {
-      mockRoom.emit('participantDisconnected', 'otherParticipant');
+      mockRoom.emit("participantDisconnected", "otherParticipant");
     });
-    expect(result.current).toBe('mockDominantSpeaker');
+    expect(result.current).toBe("mockDominantSpeaker");
   });
 
   it('should not set "null" as the dominant speaker when a different participant disconnects', () => {
     const { result } = renderHook(useDominantSpeaker);
-    expect(result.current).toBe('mockDominantSpeaker');
+    expect(result.current).toBe("mockDominantSpeaker");
     act(() => {
-      mockRoom.emit('participantDisconnected', 'mockDominantSpeaker');
+      mockRoom.emit("participantDisconnected", "mockDominantSpeaker");
     });
     expect(result.current).toBe(null);
   });
@@ -57,12 +59,12 @@ describe('the useDominantSpeaker hook', () => {
     expect(result.current).toBe(null);
   });
 
-  it('should clean up listeners on unmount', () => {
+  it("should clean up listeners on unmount", () => {
     const { unmount } = renderHook(useDominantSpeaker);
-    expect(mockRoom.listenerCount('dominantSpeakerChanged')).toBe(1);
-    expect(mockRoom.listenerCount('participantDisconnected')).toBe(1);
+    expect(mockRoom.listenerCount("dominantSpeakerChanged")).toBe(1);
+    expect(mockRoom.listenerCount("participantDisconnected")).toBe(1);
     unmount();
-    expect(mockRoom.listenerCount('dominantSpeakerChanged')).toBe(0);
-    expect(mockRoom.listenerCount('participantDisconnected')).toBe(0);
+    expect(mockRoom.listenerCount("dominantSpeakerChanged")).toBe(0);
+    expect(mockRoom.listenerCount("participantDisconnected")).toBe(0);
   });
 });

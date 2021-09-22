@@ -1,22 +1,24 @@
-import { act, renderHook } from '@testing-library/react-hooks';
-import { getDeviceInfo } from '../../utils';
-import useDevices from './useDevices';
+import { act, renderHook } from "@testing-library/react-hooks";
 
-jest.mock('../../utils', () => ({ getDeviceInfo: jest.fn(() => Promise.resolve()) }));
+import { getDeviceInfo } from "../../utils";
 
-let mockAddEventListener = jest.fn();
-let mockRemoveEventListener = jest.fn();
+import useDevices from "./useDevices";
+
+jest.mock("../../utils", () => ({ getDeviceInfo: jest.fn(() => Promise.resolve()) }));
+
+const mockAddEventListener = jest.fn();
+const mockRemoveEventListener = jest.fn();
 
 // @ts-ignore
 navigator.mediaDevices = {
   addEventListener: mockAddEventListener,
-  removeEventListener: mockRemoveEventListener,
+  removeEventListener: mockRemoveEventListener
 };
 
-describe('the useDevices hook', () => {
+describe("the useDevices hook", () => {
   afterEach(jest.clearAllMocks);
 
-  it('should return the correct default values', async () => {
+  it("should return the correct default values", async () => {
     const { result, waitForNextUpdate } = renderHook(useDevices);
     expect(result.current).toMatchInlineSnapshot(`
       Object {
@@ -35,7 +37,7 @@ describe('the useDevices hook', () => {
     const { waitForNextUpdate } = renderHook(useDevices);
     expect(getDeviceInfo).toHaveBeenCalledTimes(1);
 
-    expect(mockAddEventListener).toHaveBeenCalledWith('devicechange', expect.any(Function));
+    expect(mockAddEventListener).toHaveBeenCalledWith("devicechange", expect.any(Function));
     act(() => {
       mockAddEventListener.mock.calls[0][1]();
     });
@@ -48,6 +50,6 @@ describe('the useDevices hook', () => {
     const { waitForNextUpdate, unmount } = renderHook(useDevices);
     await waitForNextUpdate();
     unmount();
-    expect(mockRemoveEventListener).toHaveBeenCalledWith('devicechange', expect.any(Function));
+    expect(mockRemoveEventListener).toHaveBeenCalledWith("devicechange", expect.any(Function));
   });
 });

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { LocalVideoTrack, RemoteVideoTrack } from 'twilio-video';
+import { useEffect, useState } from "react";
+import { LocalVideoTrack, RemoteVideoTrack } from "twilio-video";
 
 type TrackType = LocalVideoTrack | RemoteVideoTrack;
 
@@ -13,11 +13,11 @@ export default function useVideoTrackDimensions(track?: TrackType) {
       const handleDimensionsChanged = (newTrack: TrackType) =>
         setDimensions({
           width: newTrack.dimensions.width,
-          height: newTrack.dimensions.height,
+          height: newTrack.dimensions.height
         });
-      track.on('dimensionsChanged', handleDimensionsChanged);
+      track.on("dimensionsChanged", handleDimensionsChanged);
       return () => {
-        track.off('dimensionsChanged', handleDimensionsChanged);
+        track.off("dimensionsChanged", handleDimensionsChanged);
       };
     }
   }, [track]);

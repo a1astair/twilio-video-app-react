@@ -1,7 +1,8 @@
-import React from 'react';
-import ParticipantInfo from '../ParticipantInfo/ParticipantInfo';
-import ParticipantTracks from '../ParticipantTracks/ParticipantTracks';
-import { Participant as IParticipant } from 'twilio-video';
+import React from "react";
+import { Participant as IParticipant } from "twilio-video";
+
+import ParticipantInfo from "../ParticipantInfo/ParticipantInfo";
+import ParticipantTracks from "../ParticipantTracks/ParticipantTracks";
 
 interface ParticipantProps {
   participant: IParticipant;
@@ -20,7 +21,7 @@ export default function Participant({
   onClick,
   isSelected,
   isLocalParticipant,
-  hideParticipant,
+  hideParticipant
 }: ParticipantProps) {
   return (
     <ParticipantInfo

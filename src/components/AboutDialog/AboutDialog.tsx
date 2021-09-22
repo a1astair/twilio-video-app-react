@@ -1,15 +1,15 @@
-import React, { PropsWithChildren } from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Divider from '@material-ui/core/Divider';
+import React, { PropsWithChildren } from "react";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Divider from "@material-ui/core/Divider";
+import Video from "twilio-video";
 
-import { version as appVersion } from '../../../package.json';
-import Video from 'twilio-video';
-import { useAppState } from '../../state';
+import { version as appVersion } from "../../../package.json";
+import { useAppState } from "../../state";
 
 interface AboutDialogProps {
   open: boolean;
@@ -26,12 +26,13 @@ function AboutDialog({ open, onClose }: PropsWithChildren<AboutDialogProps>) {
         <DialogContentText>Browser supported: {String(Video.isSupported)}</DialogContentText>
         <DialogContentText>SDK Version: {Video.version}</DialogContentText>
         <DialogContentText>App Version: {appVersion}</DialogContentText>
-        <DialogContentText>Deployed Tag: {process.env.REACT_APP_GIT_TAG || 'N/A'}</DialogContentText>
-        <DialogContentText>Deployed Commit Hash: {process.env.REACT_APP_GIT_COMMIT || 'N/A'}</DialogContentText>
+        <DialogContentText>Deployed Tag: {process.env.REACT_APP_GIT_TAG || "N/A"}</DialogContentText>
+        <DialogContentText>Deployed Commit Hash: {process.env.REACT_APP_GIT_COMMIT || "N/A"}</DialogContentText>
         {roomType && <DialogContentText>Room Type: {roomType}</DialogContentText>}
       </DialogContent>
       <Divider />
       <DialogActions>
+        {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
         <Button onClick={onClose} color="primary" variant="contained" autoFocus>
           OK
         </Button>

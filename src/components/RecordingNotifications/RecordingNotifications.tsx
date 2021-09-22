@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link } from '@material-ui/core';
-import Snackbar from '../Snackbar/Snackbar';
-import useIsRecording from '../../hooks/useIsRecording/useIsRecording';
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "@material-ui/core";
+
+import useIsRecording from "../../hooks/useIsRecording/useIsRecording";
+import Snackbar from "../Snackbar/Snackbar";
 
 enum Snackbars {
   none,
   recordingStarted,
   recordingInProgress,
-  recordingFinished,
+  recordingFinished
 }
 
 export default function RecordingNotifications() {
@@ -61,7 +62,7 @@ export default function RecordingNotifications() {
         headline="Recording Complete"
         message={
           <>
-            You can view the recording in the{' '}
+            You can view the recording in the{" "}
             <Link target="_blank" rel="noopener" href="https://www.twilio.com/console/video/logs/recordings">
               Twilio Console
             </Link>

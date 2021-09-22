@@ -1,20 +1,19 @@
-import React from 'react';
-import clsx from 'clsx';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React from "react";
+import { Button } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import clsx from "clsx";
 
-import { Button } from '@material-ui/core';
-
-import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import useVideoContext from "../../../hooks/useVideoContext/useVideoContext";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     button: {
       background: theme.brand,
-      color: 'white',
-      '&:hover': {
-        background: '#600101',
-      },
-    },
+      color: "white",
+      "&:hover": {
+        background: "#600101"
+      }
+    }
   })
 );
 

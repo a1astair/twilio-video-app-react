@@ -1,42 +1,44 @@
-import { EventEmitter } from 'events';
-import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
-import { Room, TwilioError } from 'twilio-video';
-import { VideoProvider } from './index';
-import useLocalTracks from './useLocalTracks/useLocalTracks';
-import useRestartAudioTrackOnDeviceChange from './useRestartAudioTrackOnDeviceChange/useRestartAudioTrackOnDeviceChange';
-import useRoom from './useRoom/useRoom';
-import useHandleRoomDisconnection from './useHandleRoomDisconnection/useHandleRoomDisconnection';
-import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/useHandleTrackPublicationFailed';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import React from "react";
+import { renderHook } from "@testing-library/react-hooks";
+import { EventEmitter } from "events";
+import { Room, TwilioError } from "twilio-video";
+
+import useVideoContext from "../../hooks/useVideoContext/useVideoContext";
+
+import useHandleRoomDisconnection from "./useHandleRoomDisconnection/useHandleRoomDisconnection";
+import useHandleTrackPublicationFailed from "./useHandleTrackPublicationFailed/useHandleTrackPublicationFailed";
+import useLocalTracks from "./useLocalTracks/useLocalTracks";
+import useRestartAudioTrackOnDeviceChange from "./useRestartAudioTrackOnDeviceChange/useRestartAudioTrackOnDeviceChange";
+import useRoom from "./useRoom/useRoom";
+import { VideoProvider } from "./index";
 
 const mockRoom = new EventEmitter() as Room;
-jest.mock('./useRoom/useRoom', () => jest.fn(() => ({ room: mockRoom, isConnecting: false, connect: () => {} })));
-jest.mock('./useLocalTracks/useLocalTracks', () =>
+jest.mock("./useRoom/useRoom", () => jest.fn(() => ({ room: mockRoom, isConnecting: false, connect: () => {} })));
+jest.mock("./useLocalTracks/useLocalTracks", () =>
   jest.fn(() => ({
-    localTracks: [{ name: 'mockTrack' }],
+    localTracks: [{ name: "mockTrack" }],
     getLocalVideoTrack: () => {},
     getLocalAudioTrack: () => {},
     isAcquiringLocalTracks: true,
     removeLocalAudioTrack: () => {},
-    removeLocalVideoTrack: () => {},
+    removeLocalVideoTrack: () => {}
   }))
 );
-jest.mock('./useHandleRoomDisconnection/useHandleRoomDisconnection');
-jest.mock('./useHandleTrackPublicationFailed/useHandleTrackPublicationFailed');
-jest.mock('./useRestartAudioTrackOnDeviceChange/useRestartAudioTrackOnDeviceChange');
-jest.mock('@twilio/video-processors', () => {
+jest.mock("./useHandleRoomDisconnection/useHandleRoomDisconnection");
+jest.mock("./useHandleTrackPublicationFailed/useHandleTrackPublicationFailed");
+jest.mock("./useRestartAudioTrackOnDeviceChange/useRestartAudioTrackOnDeviceChange");
+jest.mock("@twilio/video-processors", () => {
   return {
     GaussianBlurBackgroundProcessor: jest.fn().mockImplementation(() => {
       return {
-        loadModel: jest.fn(),
+        loadModel: jest.fn()
       };
-    }),
+    })
   };
 });
 
-describe('the VideoProvider component', () => {
-  it('should correctly return the Video Context object', () => {
+describe("the VideoProvider component", () => {
+  it("should correctly return the Video Context object", () => {
     const wrapper: React.FC = ({ children }) => (
       <VideoProvider onError={() => {}} options={{ dominantSpeaker: true }}>
         {children}
@@ -44,12 +46,12 @@ describe('the VideoProvider component', () => {
     );
     const { result } = renderHook(useVideoContext, { wrapper });
     const expectedSettings = {
-      type: 'none',
-      index: 0,
+      type: "none",
+      index: 0
     };
     expect(result.current).toMatchObject({
       isConnecting: false,
-      localTracks: [{ name: 'mockTrack' }],
+      localTracks: [{ name: "mockTrack" }],
       room: mockRoom,
       onError: expect.any(Function),
       connect: expect.any(Function),
@@ -61,10 +63,10 @@ describe('the VideoProvider component', () => {
       isBackgroundSelectionOpen: false,
       setIsBackgroundSelectionOpen: expect.any(Function),
       backgroundSettings: expectedSettings,
-      setBackgroundSettings: expect.any(Function),
+      setBackgroundSettings: expect.any(Function)
     });
-    expect(useRoom).toHaveBeenCalledWith([{ name: 'mockTrack' }], expect.any(Function), {
-      dominantSpeaker: true,
+    expect(useRoom).toHaveBeenCalledWith([{ name: "mockTrack" }], expect.any(Function), {
+      dominantSpeaker: true
     });
     expect(useLocalTracks).toHaveBeenCalled();
     expect(useHandleRoomDisconnection).toHaveBeenCalledWith(
@@ -79,7 +81,7 @@ describe('the VideoProvider component', () => {
     expect(useRestartAudioTrackOnDeviceChange).toHaveBeenCalledWith(result.current.localTracks);
   });
 
-  it('should call the onError function when there is an error', () => {
+  it("should call the onError function when there is an error", () => {
     const mockOnError = jest.fn();
     const wrapper: React.FC = ({ children }) => (
       <VideoProvider onError={mockOnError} options={{ dominantSpeaker: true }}>

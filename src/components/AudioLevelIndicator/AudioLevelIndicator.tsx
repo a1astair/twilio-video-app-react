@@ -1,12 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { AudioTrack, LocalAudioTrack, RemoteAudioTrack } from 'twilio-video';
-import { interval } from 'd3-timer';
-import useIsTrackEnabled from '../../hooks/useIsTrackEnabled/useIsTrackEnabled';
-import useMediaStreamTrack from '../../hooks/useMediaStreamTrack/useMediaStreamTrack';
+import React, { useEffect, useRef, useState } from "react";
+import { interval } from "d3-timer";
+import { AudioTrack, LocalAudioTrack, RemoteAudioTrack } from "twilio-video";
+
+import useIsTrackEnabled from "../../hooks/useIsTrackEnabled/useIsTrackEnabled";
+import useMediaStreamTrack from "../../hooks/useMediaStreamTrack/useMediaStreamTrack";
 
 let clipId = 0;
 const getUniqueClipId = () => clipId++;
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let audioContext: AudioContext;
@@ -23,7 +25,7 @@ export function initializeAnalyser(stream: MediaStream) {
   return analyser;
 }
 
-function AudioLevelIndicator({ audioTrack, color = 'white' }: { audioTrack?: AudioTrack; color?: string }) {
+function AudioLevelIndicator({ audioTrack, color = "white" }: { audioTrack?: AudioTrack; color?: string }) {
   const SVGRectRef = useRef<SVGRectElement>(null);
   const [analyser, setAnalyser] = useState<AnalyserNode>();
   const isTrackEnabled = useIsTrackEnabled(audioTrack as LocalAudioTrack | RemoteAudioTrack);
@@ -41,7 +43,7 @@ function AudioLevelIndicator({ audioTrack, color = 'white' }: { audioTrack?: Aud
       // all tracks when they are not in use. Browsers like Firefox don't let you create a new stream
       // from a new audio device while the active audio device still has active tracks.
       const stopAllMediaStreamTracks = () => newMediaStream.getTracks().forEach(track => track.stop());
-      audioTrack.on('stopped', stopAllMediaStreamTracks);
+      audioTrack.on("stopped", stopAllMediaStreamTracks);
 
       const reinitializeAnalyser = () => {
         stopAllMediaStreamTracks();
@@ -54,12 +56,12 @@ function AudioLevelIndicator({ audioTrack, color = 'white' }: { audioTrack?: Aud
       // Here we reinitialize the AnalyserNode on focus to avoid an issue in Safari
       // where the analysers stop functioning when the user switches to a new tab
       // and switches back to the app.
-      window.addEventListener('focus', reinitializeAnalyser);
+      window.addEventListener("focus", reinitializeAnalyser);
 
       return () => {
         stopAllMediaStreamTracks();
-        window.removeEventListener('focus', reinitializeAnalyser);
-        audioTrack.off('stopped', stopAllMediaStreamTracks);
+        window.removeEventListener("focus", reinitializeAnalyser);
+        audioTrack.off("stopped", stopAllMediaStreamTracks);
       };
     }
   }, [isTrackEnabled, mediaStreamTrack, audioTrack]);
@@ -81,11 +83,11 @@ function AudioLevelIndicator({ audioTrack, color = 'white' }: { audioTrack?: Aud
 
         const volume = Math.min(14, Math.max(0, Math.log10(values / length / 3) * 7));
 
-        SVGClipElement?.setAttribute('y', String(14 - volume));
+        SVGClipElement?.setAttribute("y", String(14 - volume));
       }, 100);
 
       return () => {
-        SVGClipElement.setAttribute('y', '14');
+        SVGClipElement.setAttribute("y", "14");
         timer.stop();
       };
     }

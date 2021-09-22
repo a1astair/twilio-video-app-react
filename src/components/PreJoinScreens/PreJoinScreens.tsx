@@ -1,31 +1,29 @@
-import React, { useState, useEffect, FormEvent } from 'react';
-import DeviceSelectionScreen from './DeviceSelectionScreen/DeviceSelectionScreen';
-import IntroContainer from '../IntroContainer/IntroContainer';
-import MediaErrorSnackbar from './MediaErrorSnackbar/MediaErrorSnackbar';
-import { useAppState } from '../../state';
-import { useParams } from 'react-router-dom';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import React, { useEffect, useState } from "react";
+
+import useVideoContext from "../../hooks/useVideoContext/useVideoContext";
+import { useAppState } from "../../state";
+import IntroContainer from "../IntroContainer/IntroContainer";
+
+import DeviceSelectionScreen from "./DeviceSelectionScreen/DeviceSelectionScreen";
+import MediaErrorSnackbar from "./MediaErrorSnackbar/MediaErrorSnackbar";
 
 export enum Steps {
   roomNameStep,
-  deviceSelectionStep,
+  deviceSelectionStep
 }
 
 export default function PreJoinScreens() {
-  const { user } = useAppState();
   const { getAudioAndVideoTracks } = useVideoContext();
   const [step, setStep] = useState(Steps.roomNameStep);
 
-  const [name, setName] = useState<string>(user?.displayName || '');
-  const [roomName, setRoomName] = useState<string>('');
+  // Will need to get this from kopernik
+  const [roomName] = useState<string>("");
 
   const [mediaError, setMediaError] = useState<Error>();
 
   useEffect(() => {
     if (step === Steps.deviceSelectionStep && !mediaError) {
       getAudioAndVideoTracks().catch(error => {
-        console.log('Error acquiring local media:');
-        console.dir(error);
         setMediaError(error);
       });
     }
@@ -35,7 +33,7 @@ export default function PreJoinScreens() {
     <IntroContainer>
       <MediaErrorSnackbar error={mediaError} />
       {step === Steps.deviceSelectionStep && (
-        <DeviceSelectionScreen name={name} roomName={roomName} setStep={setStep} />
+        <DeviceSelectionScreen setStep={setStep} />
       )}
     </IntroContainer>
   );

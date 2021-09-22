@@ -1,20 +1,21 @@
-import { renderHook } from '@testing-library/react-hooks';
-import useRestartAudioTrackOnDeviceChange from './useRestartAudioTrackOnDeviceChange';
+import { renderHook } from "@testing-library/react-hooks";
 
-let mockAddEventListener = jest.fn();
-let mockRemoveEventListener = jest.fn();
+import useRestartAudioTrackOnDeviceChange from "./useRestartAudioTrackOnDeviceChange";
+
+const mockAddEventListener = jest.fn();
+const mockRemoveEventListener = jest.fn();
 
 // @ts-ignore
 navigator.mediaDevices = {
   addEventListener: mockAddEventListener,
-  removeEventListener: mockRemoveEventListener,
+  removeEventListener: mockRemoveEventListener
 };
 
-describe('the useHandleTrackPublicationFailed hook', () => {
+describe("the useHandleTrackPublicationFailed hook", () => {
   afterEach(jest.clearAllMocks);
 
-  it('should not restart the audio track if mediaStreamTrack readyState has not ended', () => {
-    const localTrack = [{ kind: 'audio', mediaStreamTrack: { readyState: 'live' }, restart: jest.fn() }];
+  it("should not restart the audio track if mediaStreamTrack readyState has not ended", () => {
+    const localTrack = [{ kind: "audio", mediaStreamTrack: { readyState: "live" }, restart: jest.fn() }];
     renderHook(() => useRestartAudioTrackOnDeviceChange(localTrack as any));
 
     // call handleDeviceChange function:
@@ -23,8 +24,8 @@ describe('the useHandleTrackPublicationFailed hook', () => {
     expect(localTrack[0].restart).not.toHaveBeenCalled();
   });
 
-  it('should restart the audio track if mediaStreamTrack readyState has ended', () => {
-    const localTrack = [{ kind: 'audio', mediaStreamTrack: { readyState: 'ended' }, restart: jest.fn() }];
+  it("should restart the audio track if mediaStreamTrack readyState has ended", () => {
+    const localTrack = [{ kind: "audio", mediaStreamTrack: { readyState: "ended" }, restart: jest.fn() }];
     renderHook(() => useRestartAudioTrackOnDeviceChange(localTrack as any));
 
     // call handleDeviceChange function:
@@ -33,10 +34,10 @@ describe('the useHandleTrackPublicationFailed hook', () => {
     expect(localTrack[0].restart).toHaveBeenCalledWith({});
   });
 
-  it('should remove the event handler when component unmounts', () => {
+  it("should remove the event handler when component unmounts", () => {
     const { unmount } = renderHook(() => useRestartAudioTrackOnDeviceChange([]));
     unmount();
 
-    expect(mockRemoveEventListener).toHaveBeenCalledWith('devicechange', expect.any(Function));
+    expect(mockRemoveEventListener).toHaveBeenCalledWith("devicechange", expect.any(Function));
   });
 });

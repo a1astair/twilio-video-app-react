@@ -1,8 +1,10 @@
-import { Callback } from '../../../types';
-import { isMobile } from '../../../utils';
-import Video, { ConnectOptions, LocalTrack, Room } from 'twilio-video';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
+import Video, { ConnectOptions, LocalTrack, Room } from "twilio-video";
 
+import { Callback } from "../../../types";
+import { isMobile } from "../../../utils";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 window.TwilioVideo = Video;
 
@@ -29,16 +31,16 @@ export default function useRoom(localTracks: LocalTrack[], onError: Callback, op
           // a warning from the EventEmitter object. Here we increase the max listeners to suppress the warning.
           newRoom.setMaxListeners(15);
 
-          newRoom.once('disconnected', () => {
+          newRoom.once("disconnected", () => {
             // Reset the room only after all other `disconnected` listeners have been called.
             setTimeout(() => setRoom(null));
-            window.removeEventListener('beforeunload', disconnect);
+            window.removeEventListener("beforeunload", disconnect);
 
             if (isMobile) {
-              window.removeEventListener('pagehide', disconnect);
+              window.removeEventListener("pagehide", disconnect);
             }
           });
-
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           window.twilioRoom = newRoom;
 
@@ -46,17 +48,17 @@ export default function useRoom(localTracks: LocalTrack[], onError: Callback, op
             // All video tracks are published with 'low' priority because the video track
             // that is displayed in the 'MainParticipant' component will have it's priority
             // set to 'high' via track.setPriority()
-            publication.setPriority('low')
+            publication.setPriority("low")
           );
 
           setIsConnecting(false);
 
           // Add a listener to disconnect from the room when a user closes their browser
-          window.addEventListener('beforeunload', disconnect);
+          window.addEventListener("beforeunload", disconnect);
 
           if (isMobile) {
             // Add a listener to disconnect from the room when a mobile user closes their browser
-            window.addEventListener('pagehide', disconnect);
+            window.addEventListener("pagehide", disconnect);
           }
         },
         error => {

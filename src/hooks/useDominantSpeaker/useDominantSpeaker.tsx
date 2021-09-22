@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import useVideoContext from '../useVideoContext/useVideoContext';
-import { RemoteParticipant } from 'twilio-video';
+import { useEffect, useState } from "react";
+import { RemoteParticipant } from "twilio-video";
+
+import useVideoContext from "../useVideoContext/useVideoContext";
 
 export default function useDominantSpeaker() {
   const { room } = useVideoContext();
@@ -26,11 +27,11 @@ export default function useDominantSpeaker() {
         });
       };
 
-      room.on('dominantSpeakerChanged', handleDominantSpeakerChanged);
-      room.on('participantDisconnected', handleParticipantDisconnected);
+      room.on("dominantSpeakerChanged", handleDominantSpeakerChanged);
+      room.on("participantDisconnected", handleParticipantDisconnected);
       return () => {
-        room.off('dominantSpeakerChanged', handleDominantSpeakerChanged);
-        room.off('participantDisconnected', handleParticipantDisconnected);
+        room.off("dominantSpeakerChanged", handleDominantSpeakerChanged);
+        room.off("participantDisconnected", handleParticipantDisconnected);
       };
     }
   }, [room]);

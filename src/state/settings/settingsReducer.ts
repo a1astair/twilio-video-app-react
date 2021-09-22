@@ -1,12 +1,12 @@
-import { Track, VideoBandwidthProfileOptions } from 'twilio-video';
+import { Track, VideoBandwidthProfileOptions } from "twilio-video";
 
 export interface Settings {
-  trackSwitchOffMode: VideoBandwidthProfileOptions['trackSwitchOffMode'];
+  trackSwitchOffMode: VideoBandwidthProfileOptions["trackSwitchOffMode"];
   dominantSpeakerPriority?: Track.Priority;
-  bandwidthProfileMode: VideoBandwidthProfileOptions['mode'];
+  bandwidthProfileMode: VideoBandwidthProfileOptions["mode"];
   maxAudioBitrate: string;
-  contentPreferencesMode?: 'auto' | 'manual';
-  clientTrackSwitchOffControl?: 'auto' | 'manual';
+  contentPreferencesMode?: "auto" | "manual";
+  clientTrackSwitchOffControl?: "auto" | "manual";
 }
 
 type SettingsKeys = keyof Settings;
@@ -18,11 +18,11 @@ export interface SettingsAction {
 
 export const initialSettings: Settings = {
   trackSwitchOffMode: undefined,
-  dominantSpeakerPriority: 'standard',
-  bandwidthProfileMode: 'collaboration',
-  maxAudioBitrate: '16000',
-  contentPreferencesMode: 'auto',
-  clientTrackSwitchOffControl: 'auto',
+  dominantSpeakerPriority: "standard",
+  bandwidthProfileMode: "collaboration",
+  maxAudioBitrate: "16000",
+  contentPreferencesMode: "auto",
+  clientTrackSwitchOffControl: "auto"
 };
 
 // This inputLabels object is used by ConnectionOptions.tsx. It is used to populate the id, name, and label props
@@ -39,6 +39,6 @@ export const inputLabels = (() => {
 export function settingsReducer(state: Settings, action: SettingsAction) {
   return {
     ...state,
-    [action.name]: action.value === 'default' ? undefined : action.value,
+    [action.name]: action.value === "default" ? undefined : action.value
   };
 }
