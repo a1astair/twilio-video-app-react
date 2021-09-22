@@ -32,7 +32,7 @@ export default function Menu(props: { buttonClassName?: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
-  const { isFetching, updateRecordingRules, roomType } = useAppState();
+  const { isFetching, roomType } = useAppState();
   const { setIsChatWindowOpen } = useChatContext();
   const isRecording = useIsRecording();
   const { room, setIsBackgroundSelectionOpen } = useVideoContext();
@@ -75,11 +75,7 @@ export default function Menu(props: { buttonClassName?: string }) {
             disabled={isFetching}
             onClick={() => {
               setMenuOpen(false);
-              if (isRecording) {
-                updateRecordingRules(room!.sid, [{ type: 'exclude', all: true }]);
-              } else {
-                updateRecordingRules(room!.sid, [{ type: 'include', all: true }]);
-              }
+              //This is where update recording rules was called to twilio's server. Will need to hook this up with aceso/videopolis to be able to change the recording rules
             }}
             data-cy-recording-button
           >

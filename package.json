@@ -1,7 +1,7 @@
 {
-  "name": "twilio-video-app-react",
+  "name": "twilio-video-app-react-frontend",
   "version": "0.5.0",
-  "private": true,
+  "private": false,
   "license": "Apache-2.0",
   "dependencies": {
     "@material-ui/core": "^4.12.3",
@@ -73,20 +73,14 @@
     ]
   },
   "scripts": {
-    "postinstall": "rimraf public/virtualbackground && copyfiles -f node_modules/@twilio/video-processors/dist/build/* public/virtualbackground",
-    "start": "concurrently npm:server npm:dev",
-    "dev": "react-scripts start",
+    "start": "react-scripts start",
     "build": "node ./scripts/build.js",
     "test": "cross-env TZ=utc jest",
     "eject": "react-scripts eject",
     "lint": "eslint src server",
-    "server": "ts-node -T -P server/tsconfig.json server/index.ts",
-    "typescript:server": "tsc --noEmit -p server/",
     "test:ci": "cross-env TZ=utc jest --ci --runInBand --reporters=default --reporters=jest-junit --coverage --silent",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run --browser chrome",
-    "cypress:ci": "cross-env CYPRESS_baseUrl=http://localhost:8081 start-server-and-test server http://localhost:8081 cypress:run",
-    "deploy:twilio-cli": "cross-env REACT_APP_SET_AUTH=passcode npm run build && twilio rtc:apps:video:deploy --authentication=passcode --app-directory ./build"
+    "cypress:run": "cypress run --browser chrome"
   },
   "eslintConfig": {
     "extends": "react-app",
@@ -109,12 +103,6 @@
       "last 1 safari version"
     ]
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "proxy": "http://localhost:8081/",
   "jest": {
     "snapshotSerializers": [
       "enzyme-to-json/serializer"

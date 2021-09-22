@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useState } from 'react';
-import { RecordingRules, RoomType } from '../types';
+import { RoomType } from '../types';
 import { TwilioError } from 'twilio-video';
 import { settingsReducer, initialSettings, Settings, SettingsAction } from './settings/settingsReducer';
 import useActiveSinkId from './useActiveSinkId/useActiveSinkId';
@@ -10,7 +10,6 @@ import { User } from 'firebase';
 export interface StateContextType {
   error: TwilioError | Error | null;
   setError(error: TwilioError | Error | null): void;
-  getToken(name: string, room: string, passcode?: string): Promise<{ room_type: RoomType; token: string }>;
   user?: User | null | { displayName: undefined; photoURL: undefined; passcode?: string };
   signIn?(passcode?: string): Promise<void>;
   signOut?(): Promise<void>;
@@ -21,7 +20,8 @@ export interface StateContextType {
   settings: Settings;
   dispatchSetting: React.Dispatch<SettingsAction>;
   roomType?: RoomType;
-  updateRecordingRules(room_sid: string, rules: RecordingRules): Promise<object>;
+  token: string;
+  setToken(token: string): void;
 }
 
 export const StateContext = createContext<StateContextType>(null!);
@@ -40,6 +40,7 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
   const [isFetching, setIsFetching] = useState(false);
   const [activeSinkId, setActiveSinkId] = useActiveSinkId();
   const [settings, dispatchSetting] = useReducer(settingsReducer, initialSettings);
+  const [token, setToken] = useState<string>("");
   const [roomType, setRoomType] = useState<RoomType>();
 
   let contextValue = {
@@ -66,82 +67,11 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
   } else {
     contextValue = {
       ...contextValue,
-      getToken: async (user_identity, room_name) => {
-        const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || '/token';
-
-        return fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_identity,
-            room_name,
-            create_conversation: process.env.REACT_APP_DISABLE_TWILIO_CONVERSATIONS !== 'true',
-          }),
-        }).then(res => res.json());
-      },
-      updateRecordingRules: async (room_sid, rules) => {
-        const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || '/recordingrules';
-
-        return fetch(endpoint, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ room_sid, rules }),
-          method: 'POST',
-        })
-          .then(async res => {
-            const jsonResponse = await res.json();
-
-            if (!res.ok) {
-              const recordingError = new Error(
-                jsonResponse.error?.message || 'There was an error updating recording rules'
-              );
-              recordingError.code = jsonResponse.error?.code;
-              return Promise.reject(recordingError);
-            }
-
-            return jsonResponse;
-          })
-          .catch(err => setError(err));
-      },
     };
   }
 
-  const getToken: StateContextType['getToken'] = (name, room) => {
-    setIsFetching(true);
-    return contextValue
-      .getToken(name, room)
-      .then(res => {
-        setRoomType(res.room_type);
-        setIsFetching(false);
-        return res;
-      })
-      .catch(err => {
-        setError(err);
-        setIsFetching(false);
-        return Promise.reject(err);
-      });
-  };
-
-  const updateRecordingRules: StateContextType['updateRecordingRules'] = (room_sid, rules) => {
-    setIsFetching(true);
-    return contextValue
-      .updateRecordingRules(room_sid, rules)
-      .then(res => {
-        setIsFetching(false);
-        return res;
-      })
-      .catch(err => {
-        setError(err);
-        setIsFetching(false);
-        return Promise.reject(err);
-      });
-  };
-
   return (
-    <StateContext.Provider value={{ ...contextValue, getToken, updateRecordingRules }}>
+    <StateContext.Provider value={{ ...contextValue }}>
       {props.children}
     </StateContext.Provider>
   );
